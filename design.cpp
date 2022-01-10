@@ -9,6 +9,7 @@
 #include "getopt.h"
 #include <cassert>
 #include <cmath>
+#include <cstring>
 #include <cstdio>
 #include <algorithm>
 #include <tuple>
@@ -147,7 +148,7 @@ static bool report(const state& st, const cmdline& params)
     std::sort(part_names.begin(), part_names.end(), [](const pair& a, const pair& b) {
         return a.first->name < b.first->name;
     });
-    printf("mass: %5.0f area:%4d cost:%6d twr:%5.1f time:%4.0f",
+    printf("mass: %5.0f area:%4d cost:%6d twr:%4.1f time:%4.0f",
            (double)st.mass, st.area, st.cost, (double)st.twr(), (double)st.combat_time());
     if (params.verbosity > 0)
     {

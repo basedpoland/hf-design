@@ -4,7 +4,6 @@
 
 namespace hf::design {
 
-struct cmdline;
 struct part;
 
 struct state final

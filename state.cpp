@@ -1,9 +1,5 @@
 #include "state.hpp"
 #include "part-list.hpp"
-#include "cmdline.hpp"
-#include <utility>
-#include <vector>
-#include <cstdio>
 
 namespace hf::design {
 
