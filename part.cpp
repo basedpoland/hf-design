@@ -32,7 +32,7 @@ part::part(const char* name_, double mass_, double power_, part_size size_, int 
     auto& parts = static_parts();
     auto it = std::lower_bound(parts.begin(), parts.end(), this, part_lessp);
     if (it != parts.end() && !strcmp(name, (**it).name))
-        bug("duplicate part -- '%s' - %s", name, (**it).name);
+        BUG("duplicate part -- '%s' - %s", name, (**it).name);
     parts.insert(it, this);
 }
 
@@ -41,7 +41,7 @@ part::~part()
     auto& parts = static_parts();
     auto it = std::lower_bound(parts.begin(), parts.end(), this, part_lessp);
     if (it == parts.end() || !!strcmp(name, (**it).name))
-        bug("part not present in dtor -- '%s'", name);
+        BUG("part not present in dtor -- '%s'", name);
     parts.erase(it);
 }
 
@@ -65,7 +65,7 @@ const part& part_or_die(const char* str)
     const part& ret = maybe_part(str);
     if (&ret == &null_part)
     {
-        err("no such part -- '%s'", str);
+        ERR("no such part -- '%s'", str);
         cmdline::terminate(EX_SOFTWARE);
     }
     return ret;
@@ -76,7 +76,7 @@ void add_part_(state& st, const part& x, int count, area_mode amode)
     st.mass += x.mass * count;
     st.power += x.power * count;
     if (amode == area_mode::enabled && x.size == sz_nan)
-        bug("add_part_() wrong area sz_nan for part %s", x.name);
+        BUG("add_part_() wrong area sz_nan for part %s", x.name);
     if (amode == area_mode::enabled)
         st.area += count * std::abs(x.size);
     st.cost += x.price * count;

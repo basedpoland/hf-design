@@ -11,7 +11,7 @@ void abort(void);
     fflush(stderr);                         \
 }())
 
-#define warn(...)   debug_out_("warning: ", __VA_ARGS__)
-#define err(...)    debug_out_("error: ", __VA_ARGS__)
-#define info(...)   debug_out_("", __VA_ARGS__)
-#define bug(...)    ((void)debug_out_("BUG: ", __VA_ARGS__), ::abort())
+#define WARN(...)   debug_out_("warning: ", __VA_ARGS__)
+#define ERR(...)    debug_out_("error: ", __VA_ARGS__)
+#define INFO(...)   debug_out_("", __VA_ARGS__)
+#define BUG(...)    ((void)debug_out_("BUG: ", __VA_ARGS__), ::abort())

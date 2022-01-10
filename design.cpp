@@ -27,25 +27,25 @@ static bool add_gun(state& st, const cmdline& params, const char* str)
     buf[sizeof(buf)-1] = '\0';
     if (ret != 2 || count <= 0)
     {
-        err("wrong gun specification -- '%s'", str);
+        ERR("wrong gun specification -- '%s'", str);
         params.seek_help();
         return false;
     }
 
     auto seek_gun_related_help = [&] {
-        info("Try '%s -G' to list supported guns.", params.argv[0]);
+        INFO("Try '%s -G' to list supported guns.", params.argv[0]);
     };
 
     const part& p = maybe_part(buf);
     if (p == null_part)
     {
-        err("no such gun -- '%s'", buf+2);
+        ERR("no such gun -- '%s'", buf + 2);
         seek_gun_related_help();
         return false;
     }
     if (p.ammo >= 0)
     {
-        err("part not a gun -- '%s'", str);
+        ERR("part not a gun -- '%s'", str);
         seek_gun_related_help();
         return false;
     }
@@ -169,7 +169,7 @@ static bool report(const state& st, const cmdline& params, int k)
     const auto& part_names = part::all_parts();
     switch (params.format)
     {
-    default: bug("unhandled format type 0x%02ux", (unsigned)params.format);
+    default: BUG("unhandled format type 0x%02ux", (unsigned)params.format);
     case cmdline::fmt_csv:
     {
         if (k == 0)

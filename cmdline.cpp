@@ -122,7 +122,7 @@ cmdline cmdline::parse_options(int argc, char* const* argv)
         switch (c)
         {
         default:
-            bug("unhandled command-line argument -- 0x%2x'", (int)c);
+            BUG("unhandled command-line argument -- 0x%2x'", (int)c);
         case -1:
             if (optind == argc)
                 usage(argv[0]);
@@ -163,7 +163,7 @@ cmdline::fmt cmdline::parse_format(const char* str) const
         if (!strcmp(str, name))
             return fmt;
 
-    err("invalid output format -- '%s'", optarg);
+    ERR("invalid output format -- '%s'", optarg);
     seek_help();
     terminate(EX_USAGE);
 }
