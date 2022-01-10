@@ -20,7 +20,6 @@ struct cmdline final
     int argc = 0;
     int fixed_engine_count = 0, max_engines = 32, max_fuel_usage = int_max;
     int min_combat_time = 200, max_cost = int_max;
-    int verbosity = 0;
     int num_matches = std::numeric_limits<int>::max();
     int num_extinguishers = 2;
     fmt format = fmt_default;

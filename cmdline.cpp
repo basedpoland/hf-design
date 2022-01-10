@@ -122,7 +122,7 @@ cmdline cmdline::parse_options(int argc, char* const* argv)
     cmdline p{ argc, argv};
     opterr = 1;
 
-    while ((c = musl_getopt(argc, argv, "f:t:e:u:T:c:hGv1a:n:x:F:")) != -1)
+    while ((c = musl_getopt(argc, argv, "f:t:e:u:T:c:hG1a:n:x:F:")) != -1)
         switch (c)
         {
         default:
@@ -147,7 +147,6 @@ cmdline cmdline::parse_options(int argc, char* const* argv)
         case 'n': p.num_matches = p.get_int(1); break;
         case 'a': p.armor_layers = p.get_float(0, 16); break;
         case 'x': p.num_extinguishers = p.get_int(0, 255); break;
-        case 'v': p.verbosity++; break;
         case 'G': p.gun_list(); terminate(0);
         case 'F': p.format = p.parse_format(optarg); break;
         }

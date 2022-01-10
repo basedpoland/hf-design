@@ -148,30 +148,39 @@ static bool report(const state& st, const cmdline& params)
     std::sort(part_names.begin(), part_names.end(), [](const pair& a, const pair& b) {
         return strcmp(a.first->name, b.first->name) <= 0;
     });
-    printf("mass: %5.0f area:%4d cost:%6d twr:%4.1f time:%4.0f",
-           (double)st.mass, st.area, st.cost, (double)st.twr(), (double)st.combat_time());
-    if (params.verbosity > 0)
+    const std::tuple<const char*, const part&, int> engine_parts[] = {
+        { "d30s",   e_d30s,     2 },
+        { "d30",    e_d30,      2 },
+        { "nk25",   e_nk25,     2 },
+        { "armor",  arm_1x1,    3 },
+    };
+    switch (params.format)
     {
-        printf("\n");
-        for (const auto& [part, count] : part_names)
-            if (count)
-                printf("  %14s %3d %.1ft\n", part->name, count, (double)(part->mass * count));
-    }
-    else
-    {
-        printf(" |");
-        const std::tuple<const char*, const part&, int> parts[] = {
-            { "d30s",   e_d30s,     2 },
-            { "d30",    e_d30,      2 },
-            { "nk25",   e_nk25,     2 },
-            { "armor",  arm_1x1,    3 },
-        };
-        for (const auto& [name, x, ndigits] : parts)
-            printf(" %s:%*d", name, -ndigits, st.count(x));
-        printf(" pwr:%d,%d", st.count(pwr_1x2), st.count(pwr_2x2));
-        printf(" tank:%2d,0", st.count(tank_1x2)); // TODO big tank
-        printf(" chassis:%d,%d", st.count(chassis_1), st.count(chassis_2));
-        printf(".\n");
+    default:
+        err("unhandled format type 0x%x", (unsigned)params.format);
+        std::abort();
+    case cmdline::fmt_verbose:
+    case cmdline::fmt_pretty:
+        printf("mass: %5.0f area:%4d cost:%6d twr:%4.1f time:%4.0f",
+               (double)st.mass, st.area, st.cost, (double)st.twr(), (double)st.combat_time());
+        if (params.format == cmdline::fmt_verbose)
+        {
+            printf("\n");
+            for (const auto& [part, count] : part_names)
+                if (count)
+                    printf("  %14s %3d %.1ft\n", part->name, count, (double)(part->mass * count));
+        }
+        else
+        {
+            printf(" |");
+            for (const auto& [name, x, ndigits] : engine_parts)
+                printf(" %s:%*d", name, -ndigits, st.count(x));
+            printf(" pwr:%d,%d", st.count(pwr_1x2), st.count(pwr_2x2));
+            printf(" tank:%2d,0", st.count(tank_1x2)); // TODO big tank
+            printf(" chassis:%d,%d", st.count(chassis_1), st.count(chassis_2));
+            printf(".\n");
+        }
+        break;
     }
     return true;
 }
