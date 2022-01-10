@@ -77,10 +77,7 @@ void add_part_(state& st, const part& x, int count, area_mode amode)
     st.mass += x.mass * count;
     st.power += x.power * count;
     if (amode == area_mode::enabled && x.size == sz_nan)
-    {
-        err("add_part_() wrong area %d for part %s", x.size, x.name);
-        abort();
-    }
+        bug("add_part_() wrong area sz_nan for part %s", x.name);
     if (amode == area_mode::enabled)
         st.area += count * std::abs(x.size);
     st.cost += x.price * count;

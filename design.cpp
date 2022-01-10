@@ -157,8 +157,7 @@ static bool report(const state& st, const cmdline& params)
     switch (params.format)
     {
     default:
-        err("unhandled format type 0x%x", (unsigned)params.format);
-        std::abort();
+        bug("unhandled format type 0x%x", (unsigned)params.format);
     case cmdline::fmt_verbose:
     case cmdline::fmt_pretty:
         printf("mass: %5.0f area:%4d cost:%6d twr:%4.1f time:%4.0f",

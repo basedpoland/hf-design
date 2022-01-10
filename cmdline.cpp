@@ -126,8 +126,7 @@ cmdline cmdline::parse_options(int argc, char* const* argv)
         switch (c)
         {
         default:
-            err("unhandled command-line argument -- 0x%2x'", (int)c);
-            abort();
+            bug("unhandled command-line argument -- 0x%2x'", (int)c);
         case -1:
             if (optind == argc)
                 usage(argv[0]);
