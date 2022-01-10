@@ -5,6 +5,26 @@
 #include "osdefs.hpp"
 #include "cmdline.hpp"
 
+unsigned djb2::operator()(const char* str) const
+{
+    unsigned hash = 5381;
+
+    unsigned c;
+    while ((c = (unsigned char)(*str++)) != '\0')
+        hash = ((hash << 5) + hash) + c;
+
+    return hash;
+}
+
+bool chars_equal::operator()(const char* a, const char* b) const
+{
+    for (; *a == *b && *a; a++, b++)
+        (void)0;
+
+    return !*a && !*b;
+}
+
+
 static auto& static_parts()
 {
     static std::unordered_map<const char*, const part*, djb2, chars_equal> ret;
@@ -44,7 +64,7 @@ const part& part_or_die(const char* str)
     const part& ret = maybe_part(str);
     if (&ret == &null_part)
     {
-        err("no part '%s'", str);
+        err("no such part -- '%s'", str);
         cmdline::terminate(EX_SOFTWARE);
     }
     return ret;
@@ -56,10 +76,11 @@ void add_part_(state& st, const part& x, int count, area_mode amode)
     st.power += x.power * count;
     if (amode == area_mode::enabled && x.size == sz_nan)
     {
-        err("add_part_(): wrong area %d for part %s", x.size, x.name);
+        err("add_part_() wrong area %d for part %s", x.size, x.name);
         abort();
     }
-    st.area += count * (amode == area_mode::disabled ? 0 : std::abs(x.size));
+    if (amode == area_mode::enabled)
+        st.area += count * std::abs(x.size);
     st.cost += x.price * count;
     if (x.fuel >= 0)
         st.fuel += x.fuel * count;
@@ -69,7 +90,7 @@ void add_part_(state& st, const part& x, int count, area_mode amode)
 
     if (count)
     {
-        part_or_die(x.name);
+        //part_or_die(x.name);
         auto [it, b] = st.parts.emplace(&x, 0);
         it->second += count;
 
@@ -97,7 +118,6 @@ const part& part_to_hull(const part& x)
     case sz_1x2: return h_1x2;
     case sz_2x2: return h_2x2;
     case sz_cor: return h_cor;
-    case sz_zro:
     case sz_bigfuel:
         return h_null;
     default: return null_part;

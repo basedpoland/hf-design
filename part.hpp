@@ -2,7 +2,7 @@
 #include <cstddef>
 #include <unordered_map>
 
-enum part_size : int { sz_1x1 = 1, sz_2x2 = 4, sz_1x2 = 2, sz_bigfuel = 16, sz_cor = -4, sz_zro = 0, sz_nan = -1};
+enum part_size : int { sz_1x1 = 1, sz_2x2 = 4, sz_1x2 = 2, sz_bigfuel = 16, sz_cor = -4, sz_nan = -1};
 
 struct djb2 final { unsigned operator()(const char* str) const; };
 struct chars_equal { bool operator()(const char* a, const char* b) const; };

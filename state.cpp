@@ -18,4 +18,3 @@ state::state()
 {
     add_part_(*this, bridge);
 }
-

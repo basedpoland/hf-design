@@ -38,7 +38,7 @@ PART(h_1x2,     11.2,   0,      sz_nan, 10                          );
 PART(h_05,      5.6,    0,      sz_nan, 5                           );
 PART(h_null,    0,      0,      sz_nan, 0                           );
 PART(fire,      31.3,   0,      sz_1x2, 300                         );
-PART(chassis_1, 2.8,    -0.05,  sz_zro, 50                          );
+PART(chassis_1, 2.8,    -0.05,  sz_nan, 50                          );
 PART(chassis_2, 17.9,   -0.1,   sz_cor, 100                         );
 PART(pwr_1x2,   43.3,   2.8,    sz_1x2, 150                         );
 PART(pwr_2x2,   93.2,   6.1,    sz_2x2, 200                         );

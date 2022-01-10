@@ -2,7 +2,7 @@
 
 #include "getopt.h"
 #include "osdefs.hpp"
-#include "part-list.hpp"
+#include "part.hpp"
 #include "log.hpp"
 
 #include <cerrno>
@@ -17,7 +17,12 @@
 #define opterr musl_opterr
 #define optopt musl_optopt
 
-void cmdline::synopsis() const
+void cmdline::synopsis(const char* argv0)
+{
+    printf("usage: %s [opts] <count:gun-name>...\n", argv0);
+}
+
+void cmdline::seek_help() const
 {
     fprintf(stderr, "Try '%s -h' for more information.\n", argv[0]);
 }
@@ -28,7 +33,7 @@ void cmdline::wrong_param() const
             argv[0],
             optarg ? optarg : "(null)",
             argv[optind-2]);
-    synopsis();
+    seek_help();
     terminate(EX_USAGE);
 }
 
@@ -72,35 +77,35 @@ void cmdline::usage(const char* argv0)
         { "-a <float>", "layers of armor assuming square ship"},
         { "-x <int>", "fire extinguisher amount" },
         { "-1", "exit immediately upon finding a match" },
-        { "-n", "show up to that many matches"},
         { "-v", "increase verbosity level"},
-        { "-q", "single-line output only"},
+        { "-n", "output limit"},
         { "-h, -?", "this screen" },
         { "-G", "help with gun names" },
         { "count:gun...", "use these guns on this ship" },
     };
-    printf("usage: %s [opts] <count:gun-name>...\n", argv0);
+    synopsis(argv0);
     printf("this program generates HighFleet part lists.\n\n");
     for (const char* const* x : opts)
-        printf("  %-22s        %s\n", x[0], x[1]);
+        printf("  %-29s %s\n", x[0], x[1]);
     printf("\nexample: %s -f 6 -T 200 4:130mm\n", argv0);
     fflush(stdout);
     terminate(stdout == stderr ? EX_USAGE : 0);
 }
 
-void cmdline::gun_list(const cmdline& params)
+void cmdline::gun_list() const
 {
     using pair = std::pair<const char*, const part*>;
     std::vector<pair> part_names{part::all_parts().cbegin(), part::all_parts().cend()};
     std::sort(part_names.begin(), part_names.end(), [](const pair& a, const pair& b) {
         return a.second->name < b.second->name;
     });
-    printf("%s: supported gun parameters:\n", params.argv[0]);
+    printf("%s: supported gun parameters:\n", argv[0]);
+    synopsis(argv[0]);
     for (const auto& [_, part] : part_names)
         if (!strncmp(part->name, "g_", 2))
             printf("  %s\n", part->name+2);
     printf("\n");
-    params.synopsis();
+    seek_help();
 }
 
 void cmdline::terminate(int status)
@@ -114,11 +119,11 @@ cmdline cmdline::parse_options(int argc, char* const* argv)
     cmdline p{ argc, argv};
     opterr = 1;
 
-    while ((c = musl_getopt(argc, argv, "f:t:e:F:T:c:hGv1a:n:qx:")) != -1)
+    while ((c = musl_getopt(argc, argv, "f:t:e:F:T:c:hGv1a:n:x:")) != -1)
         switch (c)
         {
         default:
-            err("unhandled command-line argument 0x%x'", (int)c);
+            err("unhandled command-line argument -- 0x%2x'", (int)c);
             abort();
         case -1:
             if (optind == argc)
@@ -139,13 +144,12 @@ cmdline cmdline::parse_options(int argc, char* const* argv)
         case 'n': p.num_matches = p.get_int(1); break;
         case 'a': p.armor_layers = p.get_float(0, 16); break;
         case 'x': p.num_extinguishers = p.get_int(0, 255); break;
-        case 'q': p.verbosity = -1; break;
         case 'v': p.verbosity++; break;
-        case 'G': gun_list(p); terminate(0);
+        case 'G': p.gun_list(); terminate(0);
         }
 ok:
     return p;
 error:
-    p.synopsis();
+    p.seek_help();
     terminate(EX_USAGE);
 }

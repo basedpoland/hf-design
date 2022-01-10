@@ -4,15 +4,17 @@
 #include "state.hpp"
 #include "cmdline.hpp"
 #include "osdefs.hpp"
+#include "log.hpp"
 
 #include "getopt.h"
 #include <cassert>
 #include <cmath>
 #include <cstdio>
 #include <algorithm>
+#include <tuple>
 #include <vector>
 
-static bool add_gun(state& st, const char* str)
+static bool add_gun(state& st, const cmdline& params, const char* str)
 {
     char buf[128 + 2] = { 'g', '_', '\0' };
     if (strlen(str) >= sizeof(buf))
@@ -21,11 +23,29 @@ static bool add_gun(state& st, const char* str)
     int ret = sscanf(str, "%d:%127s", &count, buf+2);
     buf[sizeof(buf)-1] = '\0';
     if (ret != 2 || count <= 0)
+    {
+        err("wrong gun specification -- '%s'", str);
+        params.seek_help();
         return false;
+    }
 
-    const part& p = part_or_die(buf);
-    if (p.ammo >= 0)
+    auto seek_gun_related_help = [&] {
+        info("Try '%s -G' to list supported guns.", params.argv[0]);
+    };
+
+    const part& p = maybe_part(buf);
+    if (p == null_part)
+    {
+        err("no such gun -- '%s'", buf+2);
+        seek_gun_related_help();
         return false;
+    }
+    if (p.ammo >= 0)
+    {
+        err("part not a gun -- '%s'", str);
+        seek_gun_related_help();
+        return false;
+    }
     add_part(st, p, count);
     int ammo = -p.ammo * count;
     int ammo_big = ammo / 2, ammo_small = ammo % 2;
@@ -137,20 +157,18 @@ static bool report(const state& st, const cmdline& params)
     else
     {
         printf(" |");
-        for (const auto& [_, x] : part::all_parts())
-        {
-            int cnt = st.count(*x);
-            if (cnt == 0)
-                continue;
-            bool show = x->thrust > 0;
-            if (show)
-                printf(" %s:%d", x->name, cnt);
-        }
+        const std::tuple<const char*, const part&, int> parts[] = {
+            { "d30s",   e_d30s,     2 },
+            { "d30",    e_d30,      2 },
+            { "nk25",   e_nk25,     2 },
+            { "armor",  arm_1x1,    3 },
+        };
+        for (const auto& [name, x, ndigits] : parts)
+            printf(" %s:%*d", name, -ndigits, st.count(x));
         printf(" pwr:%d,%d", st.count(pwr_1x2), st.count(pwr_2x2));
-        printf(" tank:%d,0", st.count(tank_1x2)); // TODO big tank
+        printf(" tank:%2d,0", st.count(tank_1x2)); // TODO big tank
         printf(" chassis:%d,%d", st.count(chassis_1), st.count(chassis_2));
-        printf(" armor:%d", st.count(arm_1x1));
-        printf("\n");
+        printf(".\n");
     }
     return true;
 }
@@ -199,12 +217,8 @@ int main(int argc, char** argv)
         if (musl_optind == argc)
             cmdline::usage(argv[0]);
         for (int i = musl_optind; i < argc; i++)
-            if (!add_gun(st, argv[i]))
-            {
-                fprintf(stderr, "error: no guns selected\n");
-                params.synopsis();
+            if (!add_gun(st, params, argv[i]))
                 params.terminate(EX_USAGE);
-            }
         do_search(st, params);
         return 0;
     } catch (const exit_status& x) {

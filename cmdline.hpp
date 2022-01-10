@@ -19,8 +19,9 @@ struct cmdline final
 
     int get_int(int min = 0, int max = 1 << 16) const;
     float get_float(float min = 0, float max = 1 << 16) const;
-    void synopsis() const;
-    static void gun_list(const cmdline& params);
+    void seek_help() const;
+    void gun_list() const;
+    static void synopsis(const char* argv0);
     [[noreturn]] static void usage(const char* argv0);
     [[noreturn]] static void terminate(int status);
 private:
