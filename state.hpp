@@ -2,6 +2,8 @@
 
 #include <unordered_map>
 
+namespace hf::design {
+
 struct cmdline;
 struct part;
 
@@ -20,3 +22,5 @@ struct state final
 
     explicit state();
 };
+
+} // namespace hf::design

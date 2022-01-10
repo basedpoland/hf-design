@@ -14,6 +14,8 @@
 #include <tuple>
 #include <vector>
 
+using namespace hf::design;
+
 static bool add_gun(state& st, const cmdline& params, const char* str)
 {
     char buf[128 + 2] = { 'g', '_', '\0' };

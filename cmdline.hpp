@@ -1,6 +1,8 @@
 #pragma once
 #include <limits>
 
+namespace hf::design {
+
 struct cmdline final
 {
     static constexpr inline auto int_max = std::numeric_limits<int>::max();
@@ -35,4 +37,4 @@ struct exit_status final
     explicit exit_status(int exit_code) : code(exit_code) {}
 };
 
-
+} // namespace hf::design

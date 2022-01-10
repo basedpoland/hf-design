@@ -17,6 +17,8 @@
 #define opterr musl_opterr
 #define optopt musl_optopt
 
+namespace hf::design {
+
 void cmdline::synopsis(const char* argv0)
 {
     printf("usage: %s [opts] <count:gun-name>...\n", argv0);
@@ -153,3 +155,5 @@ error:
     p.seek_help();
     terminate(EX_USAGE);
 }
+
+} // namespace hf::design

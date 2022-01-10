@@ -5,6 +5,8 @@
 #include "osdefs.hpp"
 #include "cmdline.hpp"
 
+namespace hf::design {
+
 unsigned djb2::operator()(const char* str) const
 {
     unsigned hash = 5381;
@@ -124,3 +126,4 @@ const part& part_to_hull(const part& x)
     }
 }
 
+} // namespace hf::design

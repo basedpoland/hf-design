@@ -5,6 +5,8 @@
 #include <vector>
 #include <cstdio>
 
+namespace hf::design {
+
 int state::count(const part& x) const
 {
     auto it = parts.find(&x);
@@ -18,3 +20,5 @@ state::state()
 {
     add_part_(*this, bridge);
 }
+
+} // namespace hf::design

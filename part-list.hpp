@@ -15,6 +15,8 @@ static inline constexpr double operator""_t(unsigned long long x) { return (doub
 #   define PART(name, ...) extern const part name;
 #endif
 
+namespace hf::design {
+
 //   name       mass    power   size    cost    thrust   fuel    ammo
 PART(g_37mm,    102_t, -0.7,    sz_2x2, 3000,   0,      0,     -1   );
 PART(g_57mm,    102_t, -0.7,    sz_2x2, 2000,   0,      0,     -1   );
@@ -46,3 +48,4 @@ PART(null_part, 0,      0,      sz_nan, 0                           );
 
 #undef PART
 
+} // namespace hf::design
