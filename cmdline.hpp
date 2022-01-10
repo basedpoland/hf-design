@@ -5,6 +5,14 @@ namespace hf::design {
 
 struct cmdline final
 {
+    enum fmt : char {
+        fmt_invalid = -1,
+        fmt_pretty = 1,
+        fmt_awk,
+        fmt_verbose,
+        fmt_default = fmt_pretty
+    };
+
     static constexpr inline auto int_max = std::numeric_limits<int>::max();
 
     float min_twr = 2, armor_layers = 0;
@@ -15,12 +23,14 @@ struct cmdline final
     int verbosity = 0;
     int num_matches = std::numeric_limits<int>::max();
     int num_extinguishers = 2;
+    fmt format = fmt_default;
 
     static cmdline parse_options(int argc, char* const* argv);
     [[noreturn]] void wrong_param() const;
 
     int get_int(int min = 0, int max = 1 << 16) const;
     float get_float(float min = 0, float max = 1 << 16) const;
+    [[nodiscard]] fmt parse_format(const char* str) const;
     void seek_help() const;
     void gun_list() const;
     static void synopsis(const char* argv0);

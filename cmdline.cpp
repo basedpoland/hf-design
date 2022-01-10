@@ -78,6 +78,7 @@ void cmdline::usage(const char* argv0)
         { "-c <int>", "max cost"},
         { "-a <float>", "layers of armor assuming square ship"},
         { "-x <int>", "fire extinguisher amount" },
+        { "-F <csv|awk|pretty|verbose>", "output fmt"},
         { "-1", "exit immediately upon finding a match" },
         { "-v", "increase verbosity level"},
         { "-n", "output limit"},
@@ -148,11 +149,28 @@ cmdline cmdline::parse_options(int argc, char* const* argv)
         case 'x': p.num_extinguishers = p.get_int(0, 255); break;
         case 'v': p.verbosity++; break;
         case 'G': p.gun_list(); terminate(0);
+        case 'F': p.format = p.parse_format(optarg); break;
         }
 ok:
     return p;
 error:
     p.seek_help();
+    terminate(EX_USAGE);
+}
+
+cmdline::fmt cmdline::parse_format(const char* str) const
+{
+    const std::pair<const char*, fmt> formats[] = {
+        { "pretty",     fmt_pretty  },
+        { "awk",        fmt_awk     },
+        { "verbose",    fmt_verbose },
+    };
+    for (const auto& [name, fmt] : formats)
+        if (!strcmp(str, name))
+            return fmt;
+
+    err("invalid output format -- '%s'", optarg);
+    seek_help();
     terminate(EX_USAGE);
 }
 
