@@ -73,7 +73,7 @@ void cmdline::usage(const char* argv0)
         { "-f <int>", "fixed thruster count" },
         { "-t <float>", "minimum twr" },
         { "-e <int>", "max maneuvering engines"},
-        { "-F <tons>", "max fuel consumption"},
+        { "-u <tons>", "max fuel consumption"},
         { "-T <secs>", "min combat time" },
         { "-c <int>", "max cost"},
         { "-a <float>", "layers of armor assuming square ship"},
@@ -121,7 +121,7 @@ cmdline cmdline::parse_options(int argc, char* const* argv)
     cmdline p{ argc, argv};
     opterr = 1;
 
-    while ((c = musl_getopt(argc, argv, "f:t:e:F:T:c:hGv1a:n:x:")) != -1)
+    while ((c = musl_getopt(argc, argv, "f:t:e:u:T:c:hGv1a:n:x:F:")) != -1)
         switch (c)
         {
         default:
@@ -139,7 +139,7 @@ cmdline cmdline::parse_options(int argc, char* const* argv)
         case 'f': p.fixed_engine_count = p.get_int(0, 255); break;
         case 't': p.min_twr = p.get_float(1.1f, 50); break;
         case 'e': p.max_engines = p.get_int(1, 255); break;
-        case 'F': p.max_fuel_usage = p.get_int(1, 10'000); break;
+        case 'u': p.max_fuel_usage = p.get_int(1, 10'000); break;
         case 'T': p.min_combat_time = p.get_int(10, 1000); break;
         case 'c': p.max_cost = p.get_int(1, 1'000'000); break;
         case '1': p.num_matches = 1; break;
