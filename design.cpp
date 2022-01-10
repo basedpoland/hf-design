@@ -143,17 +143,7 @@ static bool report(const state& st, const cmdline& params)
     if (!filter_ship(st, params))
         return false;
 
-    using pair = std::pair<const part*, int>;
-    std::vector<pair> part_names{st.parts.cbegin(), st.parts.cend()};
-    std::sort(part_names.begin(), part_names.end(), [](const pair& a, const pair& b) {
-        return strcmp(a.first->name, b.first->name) <= 0;
-    });
-    const std::tuple<const char*, const part&, int> engine_parts[] = {
-        { "d30s",   e_d30s,     2 },
-        { "d30",    e_d30,      2 },
-        { "nk25",   e_nk25,     2 },
-        { "armor",  arm_1x1,    3 },
-    };
+    const auto& part_names = part::all_parts();
     switch (params.format)
     {
     default:
@@ -165,8 +155,8 @@ static bool report(const state& st, const cmdline& params)
         if (params.format == cmdline::fmt_verbose)
         {
             printf("\n");
-            for (const auto& [part, count] : part_names)
-                if (count)
+            for (const auto* part : part_names)
+                if (int count = st.count(*part); count)
                     printf("  %14s %3d %.1ft\n", part->name, count, (double)(part->mass * count));
         }
         else

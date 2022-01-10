@@ -97,14 +97,10 @@ void cmdline::usage(const char* argv0)
 
 void cmdline::gun_list() const
 {
-    using pair = std::pair<const char*, const part*>;
-    std::vector<pair> part_names{part::all_parts().cbegin(), part::all_parts().cend()};
-    std::sort(part_names.begin(), part_names.end(), [](const pair& a, const pair& b) {
-        return a.second->name < b.second->name;
-    });
+    const auto& part_names = part::all_parts();
     printf("%s: supported gun parameters:\n", argv[0]);
     synopsis(argv[0]);
-    for (const auto& [_, part] : part_names)
+    for (const auto* part : part_names)
         if (!strncmp(part->name, "g_", 2))
             printf("  %s\n", part->name+2);
     printf("\n");

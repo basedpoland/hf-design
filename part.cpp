@@ -4,34 +4,19 @@
 #include "log.hpp"
 #include "osdefs.hpp"
 #include "cmdline.hpp"
+#include <cstring>
+#include <algorithm>
 
 namespace hf::design {
 
-unsigned djb2::operator()(const char* str) const
-{
-    unsigned hash = 5381;
-
-    unsigned c;
-    while ((c = (unsigned char)(*str++)) != '\0')
-        hash = ((hash << 5) + hash) + c;
-
-    return hash;
-}
-
-bool chars_equal::operator()(const char* a, const char* b) const
-{
-    for (; *a == *b && *a; a++, b++)
-        (void)0;
-
-    return !*a && !*b;
-}
-
-
 static auto& static_parts()
 {
-    static std::unordered_map<const char*, const part*, djb2, chars_equal> ret;
+    static std::vector<const part*> ret;
     return ret;
 }
+
+static bool part_lessp(const part* a, const part* b) { return strcmp(a->name, b->name) < 0; }
+static bool part_name_lessp(const part* a, const char* b) { return strcmp(a->name, b) < 0; }
 
 part::part(const char* name_, double mass_, double power_, part_size size_, int price_,
            float thrust_, double fuel_, int ammo_) :
@@ -45,29 +30,32 @@ part::part(const char* name_, double mass_, double power_, part_size size_, int 
     ammo{ammo_}
 {
     auto& parts = static_parts();
-    if (parts.find(name) != parts.end())
-        bug("duplicate part -- '%s'", name);
-    parts[name_] = this;
+    auto it = std::lower_bound(parts.begin(), parts.end(), this, part_lessp);
+    if (it != parts.end() && !strcmp(name, (**it).name))
+        bug("duplicate part -- '%s' - %s", name, (**it).name);
+    parts.insert(it, this);
 }
 
 part::~part()
 {
     auto& parts = static_parts();
-    auto cnt = parts.erase(name);
-    if (!cnt)
+    auto it = std::lower_bound(parts.begin(), parts.end(), this, part_lessp);
+    if (it == parts.end() || !!strcmp(name, (**it).name))
         bug("part not present in dtor -- '%s'", name);
+    parts.erase(it);
 }
 
-const std::unordered_map<const char*, const part*, djb2, chars_equal>& part::all_parts()
+const std::vector<const part*>& part::all_parts()
 {
     return static_parts();
 }
 
 const part& maybe_part(const char* str)
 {
-    auto it = static_parts().find(str);
-    if (it != std::end(static_parts()))
-        return *it->second;
+    const auto& parts = part::all_parts();
+    auto it = std::lower_bound(parts.cbegin(), parts.cend(), str, part_name_lessp);
+    if (it != parts.cend() && !strcmp(str, (**it).name))
+        return **it;
     else
         return null_part;
 }
