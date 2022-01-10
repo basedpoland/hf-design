@@ -146,7 +146,7 @@ static bool report(const state& st, const cmdline& params)
     using pair = std::pair<const part*, int>;
     std::vector<pair> part_names{st.parts.cbegin(), st.parts.cend()};
     std::sort(part_names.begin(), part_names.end(), [](const pair& a, const pair& b) {
-        return a.first->name < b.first->name;
+        return strcmp(a.first->name, b.first->name) <= 0;
     });
     printf("mass: %5.0f area:%4d cost:%6d twr:%4.1f time:%4.0f",
            (double)st.mass, st.area, st.cost, (double)st.twr(), (double)st.combat_time());
