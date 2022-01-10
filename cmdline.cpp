@@ -78,7 +78,7 @@ void cmdline::usage(const char* argv0)
         { "-c <int>", "max cost"},
         { "-a <float>", "layers of armor assuming square ship"},
         { "-x <int>", "fire extinguisher amount" },
-        { "-F <csv|awk|pretty|verbose>", "output fmt"},
+        { "-F <pretty|csv|verbose>", "output fmt"},
         { "-1", "exit immediately upon finding a match" },
         { "-v", "increase verbosity level"},
         { "-n", "output limit"},
@@ -156,7 +156,7 @@ cmdline::fmt cmdline::parse_format(const char* str) const
 {
     const std::pair<const char*, fmt> formats[] = {
         { "pretty",     fmt_pretty  },
-        { "awk",        fmt_awk     },
+        { "csv",        fmt_csv     },
         { "verbose",    fmt_verbose },
     };
     for (const auto& [name, fmt] : formats)

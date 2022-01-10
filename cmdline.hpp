@@ -6,9 +6,8 @@ namespace hf::design {
 struct cmdline final
 {
     enum fmt : char {
-        fmt_invalid = -1,
         fmt_pretty = 1,
-        fmt_awk,
+        fmt_csv,
         fmt_verbose,
         fmt_default = fmt_pretty
     };

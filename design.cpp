@@ -138,7 +138,30 @@ static bool filter_ship(const state& st, const cmdline& params)
     return ret;
 }
 
-static bool report(const state& st, const cmdline& params)
+template<typename F>
+static void csv_foreach_part(F&& fn)
+{
+    const std::tuple<const char*, const part&> csv_parts[] = {
+        { "D-30s",          e_d30s      },
+        { "D-30",           e_d30       },
+        { "NK-25",          e_nk25      },
+        { "Tank (small}",   tank_1x2    },
+        { "Chassis (1)",    chassis_1,  },
+        { "Chassis (2)",    chassis_2,  },
+        { "Armor",          arm_1x1     },
+    };
+
+    bool first = true;
+    for (const auto& [name, part] : csv_parts)
+    {
+        if (!first)
+            putchar(',');
+        fn(name, part);
+        first = false;
+    }
+}
+
+static bool report(const state& st, const cmdline& params, int k)
 {
     if (!filter_ship(st, params))
         return false;
@@ -146,10 +169,31 @@ static bool report(const state& st, const cmdline& params)
     const auto& part_names = part::all_parts();
     switch (params.format)
     {
-    default:
-        bug("unhandled format type 0x%x", (unsigned)params.format);
+    default: bug("unhandled format type 0x%02ux", (unsigned)params.format);
+    case cmdline::fmt_csv:
+    {
+        if (k == 0)
+        {
+            csv_foreach_part([] (const char* name, const part&) {
+                fputs(name, stdout);
+            });
+            putchar('\n');
+        }
+        csv_foreach_part([&] (const char*, const part& x) {
+            printf("%d", st.count(x));
+        });
+        putchar('\n');
+        break;
+    }
     case cmdline::fmt_verbose:
     case cmdline::fmt_pretty:
+        const std::tuple<const char*, const part&, int> engine_parts[] = {
+            { "d30s",   e_d30s,     2 },
+            { "d30",    e_d30,      2 },
+            { "nk25",   e_nk25,     2 },
+            { "armor",  arm_1x1,    3 },
+        };
+
         printf("mass: %5.0f area:%4d cost:%6d twr:%4.1f time:%4.0f",
                (double)st.mass, st.area, st.cost, (double)st.twr(), (double)st.combat_time());
         if (params.format == cmdline::fmt_verbose)
@@ -190,7 +234,7 @@ void do_search(const state& st_, const cmdline& params)
             add_power(st);
             add_armor(st, params);
 
-            if (report(st, params) && ++num_designs >= params.num_matches)
+            if (report(st, params, num_designs) && ++num_designs >= params.num_matches)
                 return;
         }
     }
