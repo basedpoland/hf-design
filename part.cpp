@@ -44,7 +44,18 @@ part::part(const char* name_, double mass_, double power_, part_size size_, int 
     thrust{(float)thrust_},
     ammo{ammo_}
 {
-    static_parts()[name_] = this;
+    auto& parts = static_parts();
+    if (parts.find(name) != parts.end())
+        bug("duplicate part -- '%s'", name);
+    parts[name_] = this;
+}
+
+part::~part()
+{
+    auto& parts = static_parts();
+    auto cnt = parts.erase(name);
+    if (!cnt)
+        bug("part not present in dtor -- '%s'", name);
 }
 
 const std::unordered_map<const char*, const part*, djb2, chars_equal>& part::all_parts()
