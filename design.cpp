@@ -32,7 +32,7 @@ static bool add_gun(state& st, const cmdline& params, const char* str)
         return false;
     }
 
-    const part& p = maybe_part(buf);
+    const auto& p = part::find_part(buf);
     if (p == null_part)
     {
         ERR("no such gun -- '%s'", buf + 2);
@@ -110,7 +110,7 @@ static void add_armor(state& st, const cmdline& params)
     const part* static_engines[] = { &e_d30s };
     for (const auto* part : static_engines)
     {
-        const auto& hull = part_to_hull(*part);
+        const auto& hull = part::find_hull(*part);
         int sz = std::abs(hull.size);
         assert(hull != null_part);
         assert(hull != h_null);

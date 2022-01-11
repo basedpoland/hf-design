@@ -50,7 +50,7 @@ const std::vector<const part*>& part::all_parts()
     return static_parts();
 }
 
-const part& maybe_part(const char* str)
+const part& part::find_part(const char* str)
 {
     const auto& parts = part::all_parts();
     auto it = std::lower_bound(parts.cbegin(), parts.cend(), str, part_name_lessp);
@@ -60,9 +60,9 @@ const part& maybe_part(const char* str)
         return null_part;
 }
 
-const part& part_or_die(const char* str)
+const part& part::find_part_or_die(const char* str)
 {
-    const part& ret = maybe_part(str);
+    const part& ret = find_part(str);
     if (&ret == &null_part)
     {
         ERR("no such part -- '%s'", str);
@@ -71,7 +71,7 @@ const part& part_or_die(const char* str)
     return ret;
 }
 
-const part& part_to_hull(const part& x)
+const part& part::find_hull(const part& x)
 {
     switch (x.size)
     {

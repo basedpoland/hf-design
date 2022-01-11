@@ -26,6 +26,10 @@ struct part final
     part(part&&) = delete;
     part& operator==(const part&) = delete;
     part& operator==(part&&) = delete;
+
+    static const part& find_part_or_die(const char* str);
+    static const part& find_hull(const part& x);
+    static const part& find_part(const char* str);
 };
 
 struct state;
