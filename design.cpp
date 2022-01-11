@@ -43,11 +43,11 @@ static bool add_gun(state& st, const cmdline& params, const char* str)
         ERR("part not a gun -- '%s'", str);
         return false;
     }
-    add_part(st, p, count);
+    st.add_part(p, count);
     int ammo = -p.ammo * count;
     int ammo_big = ammo / 2, ammo_small = ammo % 2;
-    add_part(st, ammo_2x2, ammo_big);
-    add_part(st, ammo_1x2, ammo_small);
+    st.add_part(ammo_2x2, ammo_big);
+    st.add_part(ammo_1x2, ammo_small);
 
     return true;
 }
@@ -59,15 +59,15 @@ static void add_fixed(state& st, const cmdline& params)
     if (params.fixed_engine_count < min_for_single_piece ||
         params.fixed_engine_count % 2 != 0)
     {
-        add_part(st, chassis_2, 2);
-        add_part_(st, chassis_1, 2, area_mode::disabled);
+        st.add_part(chassis_2, 2);
+        st.add_part_(chassis_1, 2, state::area_disabled);
     }
     else
     {
-        add_part(st, e_d30s, params.fixed_engine_count);
-        add_part(st, chassis_2, 1); // gear connected to corner piece
-        add_part_(st, chassis_2, 5, area_mode::disabled); // connected to other gear
-        add_part_(st, chassis_1, 2, area_mode::disabled); // small legs for landing stability
+        st.add_part(e_d30s, params.fixed_engine_count);
+        st.add_part(chassis_2, 1); // gear connected to corner piece
+        st.add_part_(chassis_2, 5, state::area_disabled); // connected to other gear
+        st.add_part_(chassis_1, 2, state::area_disabled); // small legs for landing stability
     }
 }
 
@@ -80,11 +80,10 @@ static void add_fuel(state& st, const cmdline& params)
     num_tanks -= sneaky_tanks;
     st.sneaky_corners_left -= sneaky_tanks*2;
     assert(sneaky_tanks >= 0); assert(num_tanks >= 0);
-    add_part(st, tank_1x2, num_tanks);
-    add_part_(st, tank_1x2, sneaky_tanks, area_mode::disabled);
-    add_part_(st, h_05, sneaky_tanks*2, area_mode::disabled);
-
-    add_part(st, fire, params.num_extinguishers);
+    st.add_part(tank_1x2, num_tanks);
+    st.add_part_(tank_1x2, sneaky_tanks, state::area_disabled);
+    st.add_part_(h_05, sneaky_tanks*2, state::area_disabled);
+    st.add_part(fire, params.num_extinguishers);
 }
 
 static void add_power(state& st)
@@ -95,11 +94,11 @@ static void add_power(state& st)
     if (x <= 2*pwr_1x2.power) // they weigh less than the full generator
     {
         int small_gens = x > pwr_1x2.power ? 2 : 1;
-        add_part(st, pwr_1x2, small_gens);
+        st.add_part(pwr_1x2, small_gens);
         power = std::max(0.f, power - pwr_1x2.power*small_gens);
     }
     int big_gens = (int)std::ceil((power + 1e-6f) / pwr_2x2.power);
-    add_part(st, pwr_2x2, big_gens);
+    st.add_part(pwr_2x2, big_gens);
 }
 
 static void add_armor(state& st, const cmdline& params)
@@ -120,7 +119,7 @@ static void add_armor(state& st, const cmdline& params)
     }
     assert(circumference > 0);
     int num_armor = (int)std::ceil(circumference);
-    add_part(st, arm_1x1, num_armor);
+    st.add_part(arm_1x1, num_armor);
 }
 
 static void do_search(const state& st_, const cmdline& params)
@@ -133,8 +132,8 @@ static void do_search(const state& st_, const cmdline& params)
         {
             int num_d30 = j, num_nk25 = i-j;
             state st = st_;
-            add_part(st, e_d30, num_d30);
-            add_part(st, e_nk25, num_nk25);
+            st.add_part(e_d30, num_d30);
+            st.add_part(e_nk25, num_nk25);
             add_fuel(st, params);
             add_power(st);
             add_armor(st, params);

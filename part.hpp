@@ -33,13 +33,4 @@ struct state;
 constexpr inline bool operator==(const part& a, const part& b) { return &a == &b; }
 constexpr inline bool operator!=(const part& a, const part& b) { return !(a == b); }
 
-enum class area_mode : bool { disabled = false, enabled = true };
-
-const part& maybe_part(const char* str);
-const part& part_or_die(const char* str);
-
-void add_part_(state& st, const part& x, int count = 1, area_mode amode = area_mode::enabled);
-void add_part(state& st, const part& x, int count = 1);
-const part& part_to_hull(const part& x);
-
 } // namespace hf::design

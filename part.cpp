@@ -71,43 +71,6 @@ const part& part_or_die(const char* str)
     return ret;
 }
 
-void add_part_(state& st, const part& x, int count, area_mode amode)
-{
-    st.mass += x.mass * count;
-    st.power += x.power * count;
-    if (amode == area_mode::enabled && x.size == sz_nan)
-        BUG("add_part_() wrong area sz_nan for part %s", x.name);
-    if (amode == area_mode::enabled)
-        st.area += count * std::abs(x.size);
-    st.cost += x.price * count;
-    if (x.fuel >= 0)
-        st.fuel += x.fuel * count;
-    else
-        st.fuel_flow -= x.fuel * count;
-    st.thrust += x.thrust * count;
-
-    if (count)
-    {
-        //part_or_die(x.name);
-        auto [it, b] = st.parts.emplace(&x, 0);
-        it->second += count;
-
-        if (x == h_cor)
-            st.sneaky_corners_left += count;
-    }
-}
-
-void add_part(state& st, const part& x, int count)
-{
-    add_part_(st, x, count);
-    const part& hull = part_to_hull(x);
-
-    if (hull == null_part)
-        std::abort();
-    if (hull != h_null)
-        add_part_(st, hull, count, area_mode::disabled);
-}
-
 const part& part_to_hull(const part& x)
 {
     switch (x.size)

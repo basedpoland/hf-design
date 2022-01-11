@@ -8,6 +8,8 @@ struct part;
 
 struct state final
 {
+    enum area_mode : bool { area_disabled = false, area_enabled = true };
+
     float mass = 0, power = 0, fuel = 0, fuel_flow = 0, thrust = 0;
     int area = 0, cost = 0, sneaky_corners_left = 0;
     std::unordered_map<const part*, int> parts;
@@ -20,6 +22,8 @@ struct state final
     int count(const part& part) const;
 
     explicit state();
+    void add_part(const part& x, int count);
+    void add_part_(const part& x, int count = 1, area_mode amode = area_enabled);
 };
 
 } // namespace hf::design

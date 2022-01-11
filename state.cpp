@@ -1,5 +1,8 @@
+#undef NDEBUG
 #include "state.hpp"
 #include "part-list.hpp"
+#include "log.hpp"
+#include <cassert>
 
 namespace hf::design {
 
@@ -14,7 +17,45 @@ int state::count(const part& x) const
 
 state::state()
 {
-    add_part_(*this, bridge);
+    add_part_(bridge);
+}
+
+void state::add_part_(const part& x, int count, area_mode amode)
+{
+    assert(count >= 0);
+    mass += x.mass * count;
+    power += x.power * count;
+    if (amode == area_enabled && x.size == sz_nan)
+        BUG("add_part_() wrong area sz_nan for part %s", x.name);
+    if (amode == area_enabled)
+        area += count * std::abs(x.size);
+    cost += x.price * count;
+    if (x.fuel >= 0)
+        fuel += x.fuel * count;
+    else
+        fuel_flow -= x.fuel * count;
+    thrust += x.thrust * count;
+
+    if (count)
+    {
+        //find_part_or_die(x.name);
+        auto [it, b] = parts.insert({&x, 0});
+        it->second += count;
+
+        if (x == h_cor)
+            sneaky_corners_left += count;
+    }
+}
+
+void state::add_part(const part& x, int count)
+{
+    add_part_(x, count);
+    const auto& hull = part::find_hull(x);
+
+    if (hull == null_part)
+        std::abort();
+    if (hull != h_null)
+        add_part_(hull, count, area_disabled);
 }
 
 } // namespace hf::design
