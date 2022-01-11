@@ -34,21 +34,15 @@ static bool add_gun(state& st, const cmdline& params, const char* str)
         return false;
     }
 
-    auto seek_gun_related_help = [&] {
-        INFO("Try '%s -G' to list supported guns.", params.argv[0]);
-    };
-
     const part& p = maybe_part(buf);
     if (p == null_part)
     {
         ERR("no such gun -- '%s'", buf + 2);
-        seek_gun_related_help();
         return false;
     }
     if (p.ammo >= 0)
     {
         ERR("part not a gun -- '%s'", str);
-        seek_gun_related_help();
         return false;
     }
     add_part(st, p, count);
@@ -176,7 +170,10 @@ extern "C" int main(int argc, char** argv)
             cmdline::usage(argv[0]);
         for (int i = musl_optind; i < argc; i++)
             if (!add_gun(st, params, argv[i]))
+            {
+                INFO("Try '%s -G' to list supported guns.", params.argv[0]);
                 params.terminate(EX_USAGE);
+            }
         do_search(st, params);
         return 0;
     } catch (const exit_status& x) {
