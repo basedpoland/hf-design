@@ -144,7 +144,7 @@ static void do_search(const state& st_, const cmdline& params)
     }
 
     if (num_designs == 0)
-        fprintf(stderr, "error: no designs could be generated within the constraints.\n");
+        ERR("no designs could be generated within the constraints.");
 }
 
 extern "C" int main(int argc, char** argv)
