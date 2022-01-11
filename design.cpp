@@ -52,7 +52,7 @@ static bool add_gun(state& st, const cmdline& params, const char* str)
     return true;
 }
 
-void add_fixed(state& st, const cmdline& params)
+static void add_fixed(state& st, const cmdline& params)
 {
     constexpr int min_for_single_piece = 4;
 
@@ -71,7 +71,7 @@ void add_fixed(state& st, const cmdline& params)
     }
 }
 
-void add_fuel(state& st, const cmdline& params)
+static void add_fuel(state& st, const cmdline& params)
 {
     assert(st.fuel_flow > 1e-6f);
     // TODO big tank usage
@@ -87,7 +87,7 @@ void add_fuel(state& st, const cmdline& params)
     add_part(st, fire, params.num_extinguishers);
 }
 
-void add_power(state& st)
+static void add_power(state& st)
 {
     float power = -st.power;
     assert(power > 1e-6f);
@@ -102,7 +102,7 @@ void add_power(state& st)
     add_part(st, pwr_2x2, big_gens);
 }
 
-void add_armor(state& st, const cmdline& params)
+static void add_armor(state& st, const cmdline& params)
 {
     if (params.armor_layers < 1e-6f)
         return;
@@ -123,7 +123,7 @@ void add_armor(state& st, const cmdline& params)
     add_part(st, arm_1x1, num_armor);
 }
 
-void do_search(const state& st_, const cmdline& params)
+static void do_search(const state& st_, const cmdline& params)
 {
     int num_designs = 0;
     // there are only two vectoring engine types, so simply:
