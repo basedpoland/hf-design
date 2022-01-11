@@ -12,8 +12,6 @@
 #include <cstring>
 #include <cstdio>
 #include <algorithm>
-#include <tuple>
-#include <vector>
 
 namespace hf::design {
 

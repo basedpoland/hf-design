@@ -4,6 +4,8 @@
 #include "state.hpp"
 #include "log.hpp"
 
+#include <tuple>
+
 namespace hf::design {
 
 template<typename F>
