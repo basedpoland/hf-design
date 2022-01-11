@@ -1,7 +1,7 @@
 #include "cmdline.hpp"
 #include "part.hpp"
 #include "part-list.hpp"
-#include "state.hpp"
+#include "ship.hpp"
 #include "log.hpp"
 
 #include <tuple>
@@ -31,7 +31,7 @@ static void csv_foreach_part(F&& fn)
     }
 }
 
-static bool filter_ship(const state& st, const cmdline& params)
+static bool filter_ship(const ship& st, const cmdline& params)
 {
     bool ret = true;
     ret &= st.twr() >= params.min_twr;
@@ -40,7 +40,7 @@ static bool filter_ship(const state& st, const cmdline& params)
     return ret;
 }
 
-bool report(const state& st, const cmdline& params, int k)
+bool report(const ship& st, const cmdline& params, int k)
 {
     if (!filter_ship(st, params))
         return false;

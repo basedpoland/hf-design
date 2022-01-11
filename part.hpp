@@ -32,8 +32,6 @@ struct part final
     static const part& find_part(const char* str);
 };
 
-struct state;
-
 constexpr inline bool operator==(const part& a, const part& b) { return &a == &b; }
 constexpr inline bool operator!=(const part& a, const part& b) { return !(a == b); }
 

@@ -1,12 +1,12 @@
 #undef NDEBUG
-#include "state.hpp"
+#include "ship.hpp"
 #include "part-list.hpp"
 #include "log.hpp"
 #include <cassert>
 
 namespace hf::design {
 
-int state::count(const part& x) const
+int ship::count(const part& x) const
 {
     auto it = parts.find(&x);
     if (it != parts.end())
@@ -15,12 +15,12 @@ int state::count(const part& x) const
         return 0;
 }
 
-state::state()
+ship::ship()
 {
     add_part_(bridge);
 }
 
-void state::add_part_(const part& x, int count, area_mode amode)
+void ship::add_part_(const part& x, int count, area_mode amode)
 {
     assert(count >= 0);
     mass += x.mass * count;
@@ -47,7 +47,7 @@ void state::add_part_(const part& x, int count, area_mode amode)
     }
 }
 
-void state::add_part(const part& x, int count)
+void ship::add_part(const part& x, int count)
 {
     add_part_(x, count);
     const auto& hull = part::find_hull(x);

@@ -1,6 +1,5 @@
 #include "part.hpp"
 #include "part-list.hpp"
-#include "state.hpp"
 #include "log.hpp"
 #include "osdefs.hpp"
 #include "cmdline.hpp"

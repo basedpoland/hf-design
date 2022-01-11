@@ -6,7 +6,7 @@ namespace hf::design {
 
 struct part;
 
-struct state final
+struct ship final
 {
     enum area_mode : bool { area_disabled = false, area_enabled = true };
 
@@ -21,7 +21,7 @@ struct state final
 
     int count(const part& part) const;
 
-    explicit state();
+    explicit ship();
     void add_part(const part& x, int count);
     void add_part_(const part& x, int count = 1, area_mode amode = area_enabled);
 };

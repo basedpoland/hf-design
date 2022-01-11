@@ -1,7 +1,7 @@
 #undef NDEBUG
 #include "part.hpp"
 #include "part-list.hpp"
-#include "state.hpp"
+#include "ship.hpp"
 #include "cmdline.hpp"
 #include "osdefs.hpp"
 #include "log.hpp"
@@ -15,9 +15,9 @@
 
 namespace hf::design {
 
-bool report(const state& st, const cmdline& params, int k);
+bool report(const ship& st, const cmdline& params, int k);
 
-static bool add_gun(state& st, const cmdline& params, const char* str)
+static bool add_gun(ship& st, const cmdline& params, const char* str)
 {
     char buf[128 + 2] = { 'g', '_', '\0' };
     if (strlen(str) >= sizeof(buf))
@@ -52,7 +52,7 @@ static bool add_gun(state& st, const cmdline& params, const char* str)
     return true;
 }
 
-static void add_fixed(state& st, const cmdline& params)
+static void add_fixed(ship& st, const cmdline& params)
 {
     constexpr int min_for_single_piece = 4;
 
@@ -60,18 +60,18 @@ static void add_fixed(state& st, const cmdline& params)
         params.fixed_engine_count % 2 != 0)
     {
         st.add_part(chassis_2, 2);
-        st.add_part_(chassis_1, 2, state::area_disabled);
+        st.add_part_(chassis_1, 2, ship::area_disabled);
     }
     else
     {
         st.add_part(e_d30s, params.fixed_engine_count);
         st.add_part(chassis_2, 1); // gear connected to corner piece
-        st.add_part_(chassis_2, 5, state::area_disabled); // connected to other gear
-        st.add_part_(chassis_1, 2, state::area_disabled); // small legs for landing stability
+        st.add_part_(chassis_2, 5, ship::area_disabled); // connected to other gear
+        st.add_part_(chassis_1, 2, ship::area_disabled); // small legs for landing stability
     }
 }
 
-static void add_fuel(state& st, const cmdline& params)
+static void add_fuel(ship& st, const cmdline& params)
 {
     assert(st.fuel_flow > 1e-6f);
     // TODO big tank usage
@@ -81,12 +81,12 @@ static void add_fuel(state& st, const cmdline& params)
     st.sneaky_corners_left -= sneaky_tanks*2;
     assert(sneaky_tanks >= 0); assert(num_tanks >= 0);
     st.add_part(tank_1x2, num_tanks);
-    st.add_part_(tank_1x2, sneaky_tanks, state::area_disabled);
-    st.add_part_(h_05, sneaky_tanks*2, state::area_disabled);
+    st.add_part_(tank_1x2, sneaky_tanks, ship::area_disabled);
+    st.add_part_(h_05, sneaky_tanks*2, ship::area_disabled);
     st.add_part(fire, params.num_extinguishers);
 }
 
-static void add_power(state& st)
+static void add_power(ship& st)
 {
     float power = -st.power;
     assert(power > 1e-6f);
@@ -101,7 +101,7 @@ static void add_power(state& st)
     st.add_part(pwr_2x2, big_gens);
 }
 
-static void add_armor(state& st, const cmdline& params)
+static void add_armor(ship& st, const cmdline& params)
 {
     if (params.armor_layers < 1e-6f)
         return;
@@ -122,7 +122,7 @@ static void add_armor(state& st, const cmdline& params)
     st.add_part(arm_1x1, num_armor);
 }
 
-static void do_search(const state& st_, const cmdline& params)
+static void do_search(const ship& st_, const cmdline& params)
 {
     int num_designs = 0;
     // there are only two vectoring engine types, so simply:
@@ -131,7 +131,7 @@ static void do_search(const state& st_, const cmdline& params)
         for (int j = 0; j <= i; j++)
         {
             int num_d30 = j, num_nk25 = i-j;
-            state st = st_;
+            ship st = st_;
             st.add_part(e_d30, num_d30);
             st.add_part(e_nk25, num_nk25);
             add_fuel(st, params);
@@ -160,7 +160,7 @@ extern "C" int main(int argc, char** argv)
         if (argc < 2)
             cmdline::usage(argv[0]);
 
-        state st;
+        ship st;
         auto params = cmdline::parse_options(argc, argv);
         add_fixed(st, params);
         if (musl_optind == argc)
