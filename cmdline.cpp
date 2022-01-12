@@ -96,17 +96,18 @@ static std::tuple<t, t, bool> parse_range_(const char* str, range_behavior r)
 }
 
 template<typename t>
-std::tuple<t, t> cmdline::parse_range(int c, range_behavior r)
+void range<t>::parse(int c)
 {
     assert(optarg);
 
-    auto [min, max, ok] = parse_range_<t>(optarg, r);
+    auto [min_, max_, ok] = parse_range_<t>(optarg, r);
     if (!ok)
     {
         ERR("invalid range given to -%c: '%s'", (char)c, optarg);
         cmdline::terminate(EX_USAGE);
     }
-    return {min, max};
+    min = min_;
+    max = max_;
 }
 
 void cmdline::synopsis(const char* argv0)
@@ -231,11 +232,11 @@ cmdline cmdline::parse_options(int argc, const char* const* argv)
         case 'h':
             usage(argv[0]);
         case 'f': p.fixed_engine_count = p.get_int(0, 255); break;
-        case 't': p.twr = parse_range<float>(c); break;
-        case 'e': p.engines = parse_range<int>(c); break;
-        case 'u': p.fuel_usage = parse_range<int>(c); break;
-        case 'T': p.combat_time = parse_range<int>(c); break;
-        case 'c': p.cost = parse_range<int>(c); break;
+        case 't': p.twr.parse(c); break;
+        case 'e': p.engines.parse(c); break;
+        case 'u': p.fuel_usage.parse(c); break;
+        case 'T': p.combat_time.parse(c); break;
+        case 'c': p.cost.parse(c); break;
         case '1': p.num_matches = 1; break;
         case 'n': p.num_matches = p.get_int(0); if (!p.num_matches) p.num_matches = INT_MAX; break;
         case 'a': p.armor_layers = p.get_float(0, 16); break;
@@ -281,7 +282,5 @@ range<t>& range<t>::operator=(const std::tuple<t, t>& x)
 
 template struct range<float>;
 template struct range<int>;
-template std::tuple<float, float> cmdline::parse_range<float>(int c, range_behavior r);
-template std::tuple<int, int> cmdline::parse_range<int>(int c, range_behavior r);
 
 } // namespace hf::design

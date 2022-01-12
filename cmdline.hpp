@@ -17,6 +17,7 @@ struct range final
     explicit range(range_behavior r = range_behavior::min);
     range(t min, t max, range_behavior r = range_behavior::min);
     range<t>& operator=(const std::tuple<t, t>& x);
+    void parse(int c);
 };
 
 struct cmdline final
@@ -63,8 +64,6 @@ struct cmdline final
     [[noreturn]] static void usage(const char* argv0);
     [[noreturn]] static void terminate(int status);
 
-    template<typename t>
-    static std::tuple<t, t> parse_range(int c, range_behavior r = range_behavior::min);
 private:
     cmdline() = default;
     cmdline(int argc, const char* const* argv) : argv(argv), argc(argc) {}
@@ -72,8 +71,6 @@ private:
 
 extern template struct range<float>;
 extern template struct range<int>;
-extern template std::tuple<float, float> cmdline::parse_range<float>(int c, range_behavior r);
-extern template std::tuple<int, int> cmdline::parse_range<int>(int c, range_behavior r);
 
 struct exit_status final
 {
