@@ -19,7 +19,7 @@ struct part final
     part() = delete;
 
     part(const char* name, double mass, double power, part_size size, int price,
-         float thrust = 0, double fuel = 0, int ammo = 0);
+         double thrust = 0, double fuel = 0, int ammo = 0);
     ~part();
 
     part(const part&&) = delete;
