@@ -41,7 +41,7 @@ struct cmdline final
     frange twr{1.1f, float_max};
     irange fuel_usage{0, 1000, range_behavior::max};
     irange engines{1, 32, range_behavior::max};
-    irange combat_time{200, int_max};
+    int combat_time = 200;
     irange cost{0, int_max, range_behavior::max};
 
     float armor_layers = 0;

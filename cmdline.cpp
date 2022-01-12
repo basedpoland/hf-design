@@ -235,7 +235,7 @@ cmdline cmdline::parse_options(int argc, const char* const* argv)
         case 't': p.twr.parse(c); break;
         case 'e': p.engines.parse(c); break;
         case 'u': p.fuel_usage.parse(c); break;
-        case 'T': p.combat_time.parse(c); break;
+        case 'T': p.combat_time = p.get_int(1, 1 << 16); break;
         case 'c': p.cost.parse(c); break;
         case '1': p.num_matches = 1; break;
         case 'n': p.num_matches = p.get_int(0); if (!p.num_matches) p.num_matches = INT_MAX; break;
