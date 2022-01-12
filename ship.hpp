@@ -17,7 +17,7 @@ struct ship final
     constexpr float twr() const { return thrust * 100.f / mass + .1f; }
     constexpr float combat_time() const { return fuel / fuel_flow; }
     constexpr float speed() const { return twr() * 90; }
-    constexpr float fuel_usage() const { return 3600 * fuel_flow / speed() * 20;  }
+    constexpr float fuel_usage() const { return std::ceil(3600 * fuel_flow / speed() * 20);  }
 
     int count(const part& part) const;
 
