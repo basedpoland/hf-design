@@ -1,3 +1,4 @@
+#undef NDEBUG
 #include "cmdline.hpp"
 
 #include "getopt.h"
@@ -5,12 +6,23 @@
 #include "part.hpp"
 #include "log.hpp"
 
+#include <cassert>
 #include <cerrno>
+#include <cstring>
 #include <cstdlib>
 #include <cstdio>
-#include <vector>
 #include <utility>
-#include <algorithm>
+#include <optional>
+#include <tuple>
+
+#ifdef _WIN32
+#   include <malloc.h>
+#   ifdef _MSC_VER
+#       define alloca _alloca
+#endif
+#else
+#   include <alloca.h>
+#endif
 
 #define optarg musl_optarg
 #define optind musl_optind
@@ -18,6 +30,84 @@
 #define optopt musl_optopt
 
 namespace hf::design {
+
+template<typename t> struct conv_for_type;
+
+template<typename t>
+static t string_to_type(const char* str, char** endptr)
+{
+    errno = 0;
+    return conv_for_type<t>::conv(str, endptr);
+}
+
+template<> struct conv_for_type<float>
+{
+    static float conv(const char* str, char** endptr) { return std::strtof(str, endptr); }
+};
+template<> struct conv_for_type<int>
+{
+    static int conv(const char* str, char** endptr) { return std::strtol(str, endptr, 10); }
+};
+
+template<typename t>
+static std::tuple<t, t, bool> parse_range_(const char* str, range_behavior r)
+{
+    constexpr auto min = std::numeric_limits<t>::min();
+    constexpr auto max = std::numeric_limits<t>::max();
+    const char* sep = strchr(str, ':');
+    char* endptr;
+    errno = 0;
+    if (!sep) // lone number
+    {
+        auto x = string_to_type<t>(str, &endptr);
+        if (*endptr || errno)
+            return {};
+        if (r == range_behavior::max)
+            return { min, x, true };
+        else
+            return { x, max, true };
+    }
+    else if (sep - str == 0) // inf -> x
+    {
+        auto x = string_to_type<t>(str+1, &endptr);
+        if (*endptr || errno)
+            return {};
+        return { min, x, true };
+    }
+    else if (sep[1] == '\0') // x -> inf
+    {
+        auto x = string_to_type<t>(str, &endptr);
+        if (endptr != sep || errno)
+            return {};
+        return { x, max, true };
+    }
+    else
+    {
+        auto start = string_to_type<t>(str, &endptr);
+        if (endptr != sep || errno)
+            return {};
+        auto end = string_to_type<t>(sep+1, &endptr);
+        if (*endptr || errno)
+            return {};
+        if (end < start)
+            return {};
+        return { start, end, true };
+    }
+}
+
+template<typename t>
+std::tuple<t, t> cmdline::parse_range(char c, range_behavior r)
+{
+    assert(optarg);
+
+    auto [min, max, ok] = parse_range_<t>(optarg, r);
+    if (!ok)
+    {
+        ERR("invalid range given to -%c: '%s'", c, optarg);
+        cmdline::terminate(EX_USAGE);
+    }
+    return {min, max};
+}
 
 void cmdline::synopsis(const char* argv0)
 {
@@ -134,19 +224,20 @@ cmdline cmdline::parse_options(int argc, char* const* argv)
             if (optind == argc)
                 usage(argv[0]);
             goto ok;
+        case ':':
         case '?':
-            //fprintf(stderr, "%s: unknown option '-%c'\n", argv[0], (char)optopt);
+            //ERR("unknown option '-%c'\n", (char)optopt);
             goto error;
         case 'h':
             usage(argv[0]);
         case 'f': p.fixed_engine_count = p.get_int(0, 255); break;
-        case 't': p.min_twr = p.get_float(1.1f, 50); break;
-        case 'e': p.max_engines = p.get_int(1, 255); break;
-        case 'u': p.max_fuel_usage = p.get_int(1, 10'000); break;
-        case 'T': p.min_combat_time = p.get_int(10, 1000); break;
-        case 'c': p.max_cost = p.get_int(1, 1'000'000); break;
+        case 't': p.twr = parse_range<float>(c); break;
+        case 'e': p.engines = parse_range<int>(c); break;
+        case 'u': p.fuel_usage = parse_range<int>(c); break;
+        case 'T': p.combat_time = parse_range<int>(c); break;
+        case 'c': p.cost = parse_range<int>(c); break;
         case '1': p.num_matches = 1; break;
-        case 'n': p.num_matches = p.get_int(1); break;
+        case 'n': p.num_matches = p.get_int(0); if (!p.num_matches) p.num_matches = INT_MAX; break;
         case 'a': p.armor_layers = p.get_float(0, 16); break;
         case 'x': p.num_extinguishers = p.get_int(0, 255); break;
         case 'G': p.gun_list(); terminate(0);
@@ -174,5 +265,23 @@ cmdline::fmt cmdline::parse_format(const char* str) const
     seek_help();
     terminate(EX_USAGE);
 }
+
+template<typename t>
+range<t>::range(range_behavior r) : r(r) {}
+
+template<typename t>
+range<t>::range(t min, t max, range_behavior r) : min(min), max(max), r(r) {}
+
+template<typename t>
+range<t>& range<t>::operator=(const std::tuple<t, t>& x)
+{
+    std::tie(min, max) = x;
+    return *this;
+}
+
+template struct range<float>;
+template struct range<int>;
+template std::tuple<float, float> cmdline::parse_range<float>(char c, range_behavior r);
+template std::tuple<int, int> cmdline::parse_range<int>(char c, range_behavior r);
 
 } // namespace hf::design

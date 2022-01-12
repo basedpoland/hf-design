@@ -76,7 +76,7 @@ static void add_fuel(ship& st, const cmdline& params)
 {
     assert(st.fuel_flow > 1e-6f);
     // TODO big tank usage
-    int num_tanks = (int)std::ceil(st.fuel_flow * params.min_combat_time / tank_1x2.fuel);
+    int num_tanks = (int)std::ceil(st.fuel_flow * params.combat_time.min / tank_1x2.fuel);
     int sneaky_tanks = std::min(st.sneaky_corners_left / 2, num_tanks); // use the cornerless 2x2 pieces to stick in extra tanks
     num_tanks -= sneaky_tanks;
     st.sneaky_corners_left -= sneaky_tanks*2;
@@ -123,8 +123,8 @@ static void add_armor(ship& st, const cmdline& params)
 static bool filter_ship(const ship& st, const cmdline& params)
 {
     bool ret = true;
-    ret &= st.twr() >= params.min_twr;
-    ret &= st.cost <= params.max_cost;
+    ret &= params.twr.check(st.twr());
+    ret &= params.cost.check(st.cost);
 
     return ret;
 }
@@ -133,7 +133,7 @@ static void do_search(const ship& st_, const cmdline& params)
 {
     int num_designs = 0;
     // there are only two vectoring engine types, so simply:
-    for (int i = 1; i <= params.max_engines; i++)
+    for (int i = std::max(1, params.engines.min); i <= params.engines.max; i++)
     {
         for (int j = 0; j <= i; j++)
         {
