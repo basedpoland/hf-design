@@ -96,14 +96,14 @@ static std::tuple<t, t, bool> parse_range_(const char* str, range_behavior r)
 }
 
 template<typename t>
-std::tuple<t, t> cmdline::parse_range(char c, range_behavior r)
+std::tuple<t, t> cmdline::parse_range(int c, range_behavior r)
 {
     assert(optarg);
 
     auto [min, max, ok] = parse_range_<t>(optarg, r);
     if (!ok)
     {
-        ERR("invalid range given to -%c: '%s'", c, optarg);
+        ERR("invalid range given to -%c: '%s'", (char)c, optarg);
         cmdline::terminate(EX_USAGE);
     }
     return {min, max};
@@ -281,7 +281,7 @@ range<t>& range<t>::operator=(const std::tuple<t, t>& x)
 
 template struct range<float>;
 template struct range<int>;
-template std::tuple<float, float> cmdline::parse_range<float>(char c, range_behavior r);
-template std::tuple<int, int> cmdline::parse_range<int>(char c, range_behavior r);
+template std::tuple<float, float> cmdline::parse_range<float>(int c, range_behavior r);
+template std::tuple<int, int> cmdline::parse_range<int>(int c, range_behavior r);
 
 } // namespace hf::design

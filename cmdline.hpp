@@ -64,7 +64,7 @@ struct cmdline final
     [[noreturn]] static void terminate(int status);
 
     template<typename t>
-    static std::tuple<t, t> parse_range(char c, range_behavior r = range_behavior::min);
+    static std::tuple<t, t> parse_range(int c, range_behavior r = range_behavior::min);
 private:
     cmdline() = default;
     cmdline(int argc, char* const* argv) : argv(argv), argc(argc) {}
@@ -72,8 +72,8 @@ private:
 
 extern template struct range<float>;
 extern template struct range<int>;
-extern template std::tuple<float, float> cmdline::parse_range<float>(char c, range_behavior r);
-extern template std::tuple<int, int> cmdline::parse_range<int>(char c, range_behavior r);
+extern template std::tuple<float, float> cmdline::parse_range<float>(int c, range_behavior r);
+extern template std::tuple<int, int> cmdline::parse_range<int>(int c, range_behavior r);
 
 struct exit_status final
 {
