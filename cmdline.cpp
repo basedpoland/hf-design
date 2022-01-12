@@ -78,18 +78,25 @@ void cmdline::usage(const char* argv0)
         { "-c <int>", "max cost"},
         { "-a <float>", "layers of armor assuming square ship"},
         { "-x <int>", "fire extinguisher amount" },
-        { "-F <pretty|csv|verbose>", "output fmt"},
+        {},
+        { "-F <pretty|line|verbose>", "output format"},
         { "-1", "exit immediately upon finding a match" },
         { "-v", "increase verbosity level"},
         { "-n", "output limit"},
         { "-h, -?", "this screen" },
         { "-G", "help with gun names" },
+        {},
         { "count:gun...", "use these guns on this ship" },
     };
     synopsis(argv0);
     printf("this program generates HighFleet part lists.\n\n");
     for (const char* const* x : opts)
-        printf("  %-29s %s\n", x[0], x[1]);
+    {
+        if (!x[0])
+            putchar('\n');
+        else
+            printf("  %-29s %s\n", x[0], x[1]);
+    }
     printf("\nexample: %s -f 6 -T 200 4:130mm\n", argv0);
     fflush(stdout);
     terminate(stdout == stderr ? EX_USAGE : 0);
