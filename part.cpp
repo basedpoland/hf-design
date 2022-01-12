@@ -17,16 +17,16 @@ static auto& static_parts()
 static bool part_lessp(const part* a, const part* b) { return strcmp(a->name, b->name) < 0; }
 static bool part_name_lessp(const part* a, const char* b) { return strcmp(a->name, b) < 0; }
 
-part::part(const char* name_, double mass_, double power_, part_size size_, int price_,
-           float thrust_, double fuel_, int ammo_) :
-    mass{(float)mass_},
-    power{(float)power_},
-    name{name_},
-    size_{size_},
-    price{price_},
-    fuel{(float)fuel_},
-    thrust{(float)thrust_},
-    ammo{ammo_}
+part::part(const char* name, double mass, double power, part_size size, int price,
+           double thrust, double fuel, int ammo) :
+    mass{(float)mass},
+    power{(float)power},
+    name{name},
+    size_{size},
+    price{price},
+    fuel{(float)fuel},
+    thrust{(float)thrust},
+    ammo{ammo}
 {
     auto& parts = static_parts();
     auto it = std::lower_bound(parts.begin(), parts.end(), this, part_lessp);
