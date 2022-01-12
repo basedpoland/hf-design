@@ -3,3 +3,4 @@
 /.clang-format
 /.idea/
 /userconfig-*.cmake
+/*.line
