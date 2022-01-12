@@ -44,14 +44,14 @@ struct cmdline final
     irange cost{0, int_max, range_behavior::max};
 
     float armor_layers = 0;
-    char* const* argv = nullptr;
+    const char* const* argv = nullptr;
     int argc = 0;
     int fixed_engine_count = 0;
     int num_matches = std::numeric_limits<int>::max();
     int num_extinguishers = 2;
     fmt format = fmt_default;
 
-    static cmdline parse_options(int argc, char* const* argv);
+    static cmdline parse_options(int argc, const char* const* argv);
     [[noreturn]] void wrong_param() const;
 
     int get_int(int min = 0, int max = 1 << 16) const;
@@ -67,7 +67,7 @@ struct cmdline final
     static std::tuple<t, t> parse_range(int c, range_behavior r = range_behavior::min);
 private:
     cmdline() = default;
-    cmdline(int argc, char* const* argv) : argv(argv), argc(argc) {}
+    cmdline(int argc, const char* const* argv) : argv(argv), argc(argc) {}
 };
 
 extern template struct range<float>;
