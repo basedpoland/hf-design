@@ -22,7 +22,7 @@ part::part(const char* name_, double mass_, double power_, part_size size_, int 
     mass{(float)mass_},
     power{(float)power_},
     name{name_},
-    size{size_},
+    size_{size_},
     price{price_},
     fuel{(float)fuel_},
     thrust{(float)thrust_},
@@ -72,7 +72,7 @@ const part& part::find_part_or_die(const char* str)
 
 const part& part::find_hull(const part& x)
 {
-    switch (x.size)
+    switch (x.size_)
     {
     case sz_1x1: return h_1x1;
     case sz_1x2: return h_1x2;

@@ -23,12 +23,13 @@ ship::ship()
 void ship::add_part_(const part& x, int count, area_mode amode)
 {
     assert(count >= 0);
+    if (amode && x.area() <= 0)
+        BUG("add_part_() wrong area for part %s", x.name);
+
     mass += x.mass * count;
     power += x.power * count;
-    if (amode == area_enabled && x.size == sz_nan)
-        BUG("add_part_() wrong area sz_nan for part %s", x.name);
-    if (amode == area_enabled)
-        area += count * std::abs(x.size);
+    if (amode)
+        area += count * x.area();
     cost += x.price * count;
     if (x.fuel >= 0)
         fuel += x.fuel * count;
@@ -38,7 +39,7 @@ void ship::add_part_(const part& x, int count, area_mode amode)
 
     if (count)
     {
-        //find_part_or_die(x.name);
+        //(void)find_part_or_die(x.name);
         auto [it, b] = parts.insert({&x, 0});
         it->second += count;
 

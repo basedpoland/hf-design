@@ -3,7 +3,7 @@
 
 namespace hf::design {
 
-enum part_size : int { sz_1x1 = 1, sz_2x2 = 4, sz_1x2 = 2, sz_bigfuel = 16, sz_cor = -4, sz_nan = -1};
+enum part_size : int { sz_1x1 = 1, sz_2x2 = 4, sz_1x2 = 2, sz_bigfuel = 16, sz_cor = -4, sz_nan = 0};
 
 struct part final
 {
@@ -11,7 +11,7 @@ struct part final
 
     float mass, power;
     const char* name = nullptr;
-    part_size size = sz_nan;
+    part_size size_ = sz_nan;
     int price;
     float fuel, thrust;
     int ammo;
@@ -30,6 +30,7 @@ struct part final
     static const part& find_part_or_die(const char* str);
     static const part& find_hull(const part& x);
     static const part& find_part(const char* str);
+    constexpr int area() const { return size_ < 0 ? -size_ : size_; }
 };
 
 constexpr inline bool operator==(const part& a, const part& b) { return &a == &b; }

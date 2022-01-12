@@ -15,7 +15,8 @@
 
 namespace hf::design {
 
-bool report(const ship& st, const cmdline& params, int k);
+void report_pretty(const ship& st, cmdline::fmt format);
+void report_csv(const ship& st, int k);
 
 static bool add_gun(ship& st, const cmdline& params, const char* str)
 {
@@ -110,16 +111,22 @@ static void add_armor(ship& st, const cmdline& params)
     const part* static_engines[] = { &e_d30s };
     for (const auto* part : static_engines)
     {
-        const auto& hull = part::find_hull(*part);
-        int sz = std::abs(hull.size);
-        assert(hull != null_part);
-        assert(hull != h_null);
+        int sz = std::abs(part->area());
         assert(sz >= 1);
-        circumference -= std::sqrt((float)sz);
+        circumference -= std::sqrt((float)sz) / 4;
     }
     assert(circumference > 0);
     int num_armor = (int)std::ceil(circumference);
     st.add_part(arm_1x1, num_armor);
+}
+
+static bool filter_ship(const ship& st, const cmdline& params)
+{
+    bool ret = true;
+    ret &= st.twr() >= params.min_twr;
+    ret &= st.cost <= params.max_cost;
+
+    return ret;
 }
 
 static void do_search(const ship& st_, const cmdline& params)
@@ -138,7 +145,15 @@ static void do_search(const ship& st_, const cmdline& params)
             add_power(st);
             add_armor(st, params);
 
-            if (report(st, params, num_designs) && ++num_designs >= params.num_matches)
+            if (!filter_ship(st, params))
+                continue;
+
+            if (params.format == params.fmt_csv)
+                report_csv(st, num_designs);
+            else
+                report_pretty(st, params.format);
+
+            if (++num_designs >= params.num_matches)
                 return;
         }
     }
