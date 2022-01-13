@@ -40,6 +40,7 @@ void report_csv(const ship& st, int k)
     using variant = std::variant<int, float, float_with_format>;
     auto mass_of = [&](const part& x) { return st.count(x) * x.mass; };
     auto count_of = [&](const part& x) { return st.count(x); };
+    auto fuel_of = [&](const part& x) { return x.fuel * st.count(x); };
 
     const std::tuple<const char*, variant> values[] = {
         { "Cost",           st.cost                                 },
@@ -49,7 +50,7 @@ void report_csv(const ship& st, int k)
         { "Speed",          st.speed(),                             },
         { "Fuel usage",     st.fuel_usage()                         },
         { "Armor (tons)",   mass_of(arm_1x1)                        },
-        { "Fuel (tons)",    mass_of(tank_1x2) + mass_of(tank_4x4)   },
+        { "Fuel (tons)",    fuel_of(tank_1x2) + fuel_of(tank_4x4)   },
         { "D-30s",          count_of(e_d30s)                        },
         { "D-30",           count_of(e_d30)                         },
         { "NK-25",          count_of(e_nk25)                        },
