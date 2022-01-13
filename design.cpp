@@ -71,7 +71,7 @@ static void add_fixed(ship& st, const cmdline& params)
     }
 }
 
-static void add_fuel(ship& st, const cmdline& params)
+static bool add_fuel(ship& st, const cmdline& params)
 {
     assert(st.fuel_flow > 1e-6f);
     int num_tanks = (int)std::ceil(st.fuel_flow * params.combat_time / tank_1x2.fuel);
@@ -79,7 +79,8 @@ static void add_fuel(ship& st, const cmdline& params)
     {
         float ratio = tank_4x4.fuel / tank_1x2.fuel;
         int num = (int)((std::max(0, num_tanks - st.sneaky_corners_left)) / ratio); // num_tanks / 11.25
-
+        if (!num)
+            return false;
         num_tanks -= (int)(num * ratio);
         assert(num_tanks >= 0);
         st.add_part_(tank_4x4, num);
@@ -92,6 +93,10 @@ static void add_fuel(ship& st, const cmdline& params)
     st.add_part_(tank_1x2, sneaky_tanks, ship::area_disabled);
     st.add_part_(h_05, sneaky_tanks*2, ship::area_disabled);
     st.add_part(fire, params.num_extinguishers);
+
+    assert(st.fuel > 0);
+
+    return true;
 }
 
 static void add_power(ship& st)
@@ -137,9 +142,8 @@ static bool filter_ship(const ship& st, const cmdline& params)
     return ret;
 }
 
-static void do_search(const ship& st_, const cmdline& params)
+static void do_search(const ship& st_, const cmdline& params, int& num_designs)
 {
-    int num_designs = 0;
     // there are only two vectoring engine types, so simply:
     for (int i = std::max(1, params.engines.min); i <= params.engines.max; i++)
     {
@@ -149,7 +153,8 @@ static void do_search(const ship& st_, const cmdline& params)
             ship st = st_;
             st.add_part(e_d30, num_d30);
             st.add_part(e_nk25, num_nk25);
-            add_fuel(st, params);
+            if (!add_fuel(st, params))
+                continue;
             add_power(st);
             add_armor(st, params);
 
@@ -167,7 +172,7 @@ static void do_search(const ship& st_, const cmdline& params)
     }
 
     if (num_designs == 0)
-        ERR("no designs could be generated within the constraints.");
+        WARN("no designs could be generated within the constraints.");
 }
 
 extern "C" int main(int argc, char** argv)
@@ -194,7 +199,13 @@ extern "C" int main(int argc, char** argv)
                 INFO("Try '%s -G' to list supported guns.", params.argv[0]);
                 params.terminate(EX_USAGE);
             }
-        do_search(st, params);
+        int nresults = 0;
+        do_search(st, params, nresults);
+        if (params.use_big_tanks)
+        {
+            params.use_big_tanks = false;
+            do_search(st, params, nresults);
+        }
         return 0;
     } catch (const exit_status& x) {
         return x.code;
