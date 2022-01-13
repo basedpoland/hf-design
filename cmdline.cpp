@@ -12,7 +12,6 @@
 #include <cstdlib>
 #include <cstdio>
 #include <utility>
-#include <optional>
 #include <tuple>
 
 #ifdef _WIN32
@@ -87,9 +86,7 @@ static std::tuple<t, t, bool> parse_range_(const char* str, range_behavior r)
         if (endptr != sep || errno)
             return {};
         auto end = string_to_type<t>(sep+1, &endptr);
-        if (*endptr || errno)
-            return {};
-        if (end < start)
+        if (*endptr || errno || end < start)
             return {};
         return { start, end, true };
     }
