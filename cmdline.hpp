@@ -51,6 +51,7 @@ struct cmdline final
     int num_matches = std::numeric_limits<int>::max();
     int num_extinguishers = 2;
     fmt format = fmt_default;
+    bool use_big_tanks = false;
 
     static cmdline parse_options(int argc, const char* const* argv);
     [[noreturn]] void wrong_param() const;
