@@ -4,7 +4,7 @@
 #ifdef IN_PART_DECL
 #   define PART(name, ...) extern const part name; const part name { (#name), __VA_ARGS__ }
 #else
-#   define PART(name, ...) extern const part name;
+#   define PART(name, ...) extern const part name
 #endif
 
 namespace hf::design {

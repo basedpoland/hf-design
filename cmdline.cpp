@@ -169,7 +169,6 @@ void cmdline::usage(const char* argv0)
         {},
         { "-F <pretty|line|verbose>", "output format"},
         { "-1", "exit immediately upon finding a match" },
-        { "-v", "increase verbosity level"},
         { "-n", "output limit"},
         { "-h, -?", "this screen" },
         { "-G", "help with gun names" },
@@ -217,7 +216,7 @@ cmdline cmdline::parse_options(int argc, const char* const* argv)
         switch (c)
         {
         default:
-            BUG("unhandled command-line argument -- 0x%2x'", (int)c);
+            BUG("unhandled command-line argument -- '%c'(0x%x)'", (char)c, c);
         case -1:
             if (optind == argc)
                 usage(argv[0]);

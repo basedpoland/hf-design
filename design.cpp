@@ -18,7 +18,7 @@ namespace hf::design {
 void report_pretty(const ship& st, cmdline::fmt format);
 void report_csv(const ship& st, int k);
 
-static bool add_gun(ship& st, const cmdline& params, const char* str)
+static bool add_gun(ship& st, const char* str)
 {
     char buf[128 + 2] = { 'g', '_', '\0' };
     if (strlen(str) >= sizeof(buf))
@@ -29,7 +29,6 @@ static bool add_gun(ship& st, const cmdline& params, const char* str)
     if (ret != 2 || count <= 0)
     {
         ERR("wrong gun specification -- '%s'", str);
-        params.seek_help();
         return false;
     }
 
@@ -182,7 +181,7 @@ extern "C" int main(int argc, char** argv)
         if (musl_optind == argc)
             cmdline::usage(argv[0]);
         for (int i = musl_optind; i < argc; i++)
-            if (!add_gun(st, params, argv[i]))
+            if (!add_gun(st, argv[i]))
             {
                 INFO("Try '%s -G' to list supported guns.", params.argv[0]);
                 params.terminate(EX_USAGE);
