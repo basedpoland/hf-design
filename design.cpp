@@ -125,7 +125,7 @@ static bool filter_ship(const ship& st, const cmdline& params)
     bool ret = true;
     ret &= params.twr.check(st.twr());
     ret &= params.cost.check(st.cost);
-    ret &= params.fuel_usage.check((int)std::ceilf(st.fuel_usage()));
+    ret &= params.fuel_usage.check(st.fuel_usage());
 
     return ret;
 }

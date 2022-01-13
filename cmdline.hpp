@@ -39,7 +39,7 @@ struct cmdline final
     static constexpr auto int_min = std::numeric_limits<int>::max();
 
     frange twr{1.1f, float_max};
-    irange fuel_usage{0, 1000, range_behavior::max};
+    frange fuel_usage{0, 1000, range_behavior::max};
     irange engines{1, 32, range_behavior::max};
     int combat_time = 200;
     irange cost{0, int_max, range_behavior::max};
