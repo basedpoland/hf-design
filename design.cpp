@@ -56,6 +56,8 @@ static void add_fixed(ship& st, int n)
 {
     constexpr int min_for_single_piece = 4;
 
+    st.add_part(e_d30s, n);
+
     if (n < min_for_single_piece || n % 2 != 0)
     {
         st.add_part(chassis_2, 2);
@@ -63,7 +65,6 @@ static void add_fixed(ship& st, int n)
     }
     else
     {
-        st.add_part(e_d30s, n);
         st.add_part(chassis_2, 1); // gear connected to corner piece
         st.add_part_(chassis_2, 5, ship::area_disabled); // connected to other gear
         st.add_part_(chassis_1, 2, ship::area_disabled); // small legs for landing stability
