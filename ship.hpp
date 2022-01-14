@@ -14,10 +14,11 @@ struct ship final
     int area = 0, cost = 0, sneaky_corners_left = 0;
     std::unordered_map<const part*, int> parts;
 
-    constexpr float twr() const { return thrust * 100.f / mass + .1f; }
+    constexpr float twr() const { return thrust * 100.f / mass; }
     constexpr float combat_time() const { return fuel / fuel_flow; }
     constexpr float speed() const { return twr() * 90; }
-    constexpr float fuel_usage() const { return 3600 * fuel_flow / speed() * 20;  }
+    constexpr float fuel_usage() const { return 3600 * 20 * fuel_flow / speed();  } // note: fuel usage is 20 times lower outside combat
+    //constexpr float range() const { return 1e3f * fuel / fuel_usage(); } // TODO inaccurate
 
     int count(const part& part) const;
 
