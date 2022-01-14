@@ -46,6 +46,8 @@ struct cmdline final
     irange fixed_engines{4, 4, range_behavior::same};
 
     float armor_layers = 0;
+    float extra_mass = 0;
+    float extra_power = 0;
     const char* const* argv = nullptr;
     int argc = 0;
     int num_matches = std::numeric_limits<int>::max();

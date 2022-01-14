@@ -150,6 +150,8 @@ static void do_search(const ship& st_, const cmdline& params, int& num_designs)
             {
                 int num_d30 = j, num_nk25 = i-j;
                 ship st = st_;
+                st.mass += params.extra_mass;
+                st.power -= params.extra_power;
                 add_fixed(st, k);
                 st.add_part(e_d30, num_d30);
                 st.add_part(e_nk25, num_nk25);

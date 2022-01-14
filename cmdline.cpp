@@ -216,7 +216,7 @@ cmdline cmdline::parse_options(int argc, const char* const* argv)
     cmdline p{argc, argv};
     opterr = 1;
 
-    while ((c = musl_getopt(argc, argv, "f:t:e:u:T:c:hG1a:n:x:F:b")) != -1)
+    while ((c = musl_getopt(argc, argv, "f:t:e:u:T:c:hG1a:n:x:F:bm:p:")) != -1)
         switch (c)
         {
         default:
@@ -244,6 +244,8 @@ cmdline cmdline::parse_options(int argc, const char* const* argv)
         case 'G': p.gun_list(); terminate(0);
         case 'F': p.format = p.parse_format(optarg); break;
         case 'b': p.use_big_tanks = true; break;
+        case 'm': p.extra_mass += p.get_float(-1e12f, 1e12f); break;
+        case 'p': p.extra_power += p.get_float(0, 1e3f); break;
         }
 ok:
     return p;
