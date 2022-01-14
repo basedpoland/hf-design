@@ -49,7 +49,7 @@ void report_csv(const ship& st, int k)
         { "Speed",          st.speed(),                             },
         { "Fuel usage",     st.fuel_usage()                         },
         { "Armor (tons)",   mass_of(arm_1x1)                        },
-        { "Tanks (tons)",   mass_of(tank_1x2) + mass_of(tank_4x4)   },
+        //{ "Tanks (tons)",   mass_of(tank_1x2) + mass_of(tank_4x4)   },
         { "D-30s",          count_of(e_d30s)                        },
         { "D-30",           count_of(e_d30)                         },
         { "NK-25",          count_of(e_nk25)                        },
