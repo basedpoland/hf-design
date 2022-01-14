@@ -174,25 +174,25 @@ static void do_search1(const ship& st_, const cmdline& params, const std::tuple<
 
 static void do_search(const ship& st_, const cmdline& params, int& num_designs)
 {
-    const int N = params.engines.max;
-
     if (params.use_big_engines)
-        for (int num_d30 = 0; num_d30 <= N; num_d30++)
-            for (int num_nk25 = 0; num_nk25 <= N - num_d30; num_nk25++)
-                for (int num_rd58 = 0; num_rd58 <= N - num_d30 - num_nk25; num_rd58++)
+        for (int N = params.engines.min; N <= params.engines.max; N++)
+            for (int num_d30 = 0; num_d30 <= N; num_d30++)
+                for (int num_nk25 = 0; num_nk25 <= N - num_d30; num_nk25++)
                 {
-                    if (num_d30 + num_nk25 + num_rd58 < params.engines.min)
-                        continue;
-                    do_search1(st_, params, { num_d30, num_nk25, num_rd58 }, num_designs);
-                    if (num_designs >= params.num_matches)
-                        return;
+                        int num_rd58 = N - num_d30 - num_nk25;
+                        assert(num_d30 + num_nk25 + num_rd58 >= params.engines.min &&
+                               num_d30 + num_nk25 + num_rd58 <= params.engines.max);
+                        do_search1(st_, params, { num_d30, num_nk25, num_rd58 }, num_designs);
+                        if (num_designs >= params.num_matches)
+                            return;
                 }
     else
-        for (int num_d30 = 0; num_d30 <= N; num_d30++)
-            for (int num_nk25 = 0; num_nk25 <= N - num_d30; num_nk25++)
+        for (int N = params.engines.min; N <= params.engines.max; N++)
+            for (int num_d30 = 0; num_d30 <= N; num_d30++)
             {
-                if (num_d30 + num_nk25 < params.engines.min)
-                    continue;
+                int num_nk25 = N - num_d30;
+                assert(num_d30 + num_nk25 >= params.engines.min &&
+                       num_d30 + num_nk25 <= params.engines.max);
                 do_search1(st_, params, { num_d30, num_nk25, 0 }, num_designs);
                 if (num_designs >= params.num_matches)
                     return;
