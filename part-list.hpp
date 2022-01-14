@@ -37,6 +37,10 @@ PART(chassis_2, 17.9923,    -0.1,   sz_cor, 100                         );
 PART(pwr_1x2,   43.3147,    2.8,    sz_1x2, 150                         );
 PART(pwr_2x2,   93.252,     6.1,    sz_2x2, 200                         );
 PART(null_part, 0,          0,      sz_nan, 0                           );
+PART(rh_1x2,    45.456,     0,      sz_nan, 100                         );
+PART(rh_1x1,    22.7505,    0,      sz_nan, 50                          );
+PART(rh_2x2,    103.257,    0,      sz_nan, 200                         );
+
 
 #undef PART
 
