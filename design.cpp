@@ -70,7 +70,7 @@ static void add_fixed(ship& st, const cmdline& params, int n)
     else
     {
         st.add_part(leg2, 1); // gear connected to corner piece
-        st.add_part_(leg2, 5, ship::area_disabled); // connected to other gear
+        st.add_part_(leg2, 6, ship::area_disabled); // connected to other gear
         st.add_part_(leg1, 2, ship::area_disabled); // small legs for landing stability
     }
 }
