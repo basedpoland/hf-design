@@ -57,8 +57,8 @@ void report_csv(const ship& st, int k)
         { "Tank L",         count_of(tank_4x4)                      },
         { "Power S",        count_of(pwr_1x2)                       },
         { "Power L",        count_of(pwr_2x2)                       },
-        { "Leg(1)",         count_of(chassis_1),                    },
-        { "Leg(2)",         count_of(chassis_2),                    },
+        { "Leg(1)",         count_of(leg1),                         },
+        { "Leg(2)",         count_of(leg2),                         },
     };
 
     if (k == 0)

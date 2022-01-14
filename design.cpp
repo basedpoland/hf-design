@@ -60,14 +60,14 @@ static void add_fixed(ship& st, int n)
 
     if (n < min_for_single_piece || n % 2 != 0)
     {
-        st.add_part(chassis_2, 2);
-        st.add_part_(chassis_1, 2, ship::area_disabled);
+        st.add_part(leg2, 2);
+        st.add_part_(leg1, 2, ship::area_disabled);
     }
     else
     {
-        st.add_part(chassis_2, 1); // gear connected to corner piece
-        st.add_part_(chassis_2, 5, ship::area_disabled); // connected to other gear
-        st.add_part_(chassis_1, 2, ship::area_disabled); // small legs for landing stability
+        st.add_part(leg2, 1); // gear connected to corner piece
+        st.add_part_(leg2, 5, ship::area_disabled); // connected to other gear
+        st.add_part_(leg1, 2, ship::area_disabled); // small legs for landing stability
     }
 }
 

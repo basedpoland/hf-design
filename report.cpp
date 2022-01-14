@@ -33,7 +33,7 @@ void report_pretty(const ship& st, cmdline::fmt format)
             printf(" %s:%*d", name, -ndigits, st.count(x));
         printf(" pwr:%d,%d", st.count(pwr_1x2), st.count(pwr_2x2));
         printf(" tank:%2d,0(%-4.0ft)", st.count(tank_1x2), (double)(st.count(tank_1x2) * tank_1x2.mass)); // TODO big tank
-        printf(" chassis:%d,%d", st.count(chassis_1), st.count(chassis_2));
+        printf(" legs:%d,%d", st.count(leg1), st.count(leg2));
         printf(" armor:%4.0f", (double)std::round(st.count(arm_1x1) * arm_1x1.mass));
         printf(".\n");
     }
