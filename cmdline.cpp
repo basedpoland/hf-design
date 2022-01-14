@@ -59,7 +59,7 @@ static std::tuple<t, t, bool> parse_range_(const char* str, range_behavior r)
     if (!sep) // lone number
     {
         auto x = string_to_type<t>(str, &endptr);
-        if (*endptr || errno)
+        if (*endptr || endptr == str || errno)
             return {};
         switch (r)
         {
@@ -70,10 +70,10 @@ static std::tuple<t, t, bool> parse_range_(const char* str, range_behavior r)
         }
 
     }
-    else if (sep - str == 0) // inf -> x
+    else if (sep == str) // inf -> x
     {
         auto x = string_to_type<t>(str+1, &endptr);
-        if (*endptr || errno)
+        if (*endptr || endptr == str+1 || errno)
             return {};
         return { min, x, true };
     }
