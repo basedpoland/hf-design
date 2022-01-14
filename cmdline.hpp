@@ -54,6 +54,7 @@ struct cmdline final
     int num_extinguishers = 2;
     fmt format = fmt_default;
     bool use_big_tanks = false;
+    bool use_big_engines = false;
 
     static cmdline parse_options(int argc, const char* const* argv);
     [[noreturn]] void wrong_param() const;

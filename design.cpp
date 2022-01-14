@@ -12,10 +12,11 @@
 #include <cstring>
 #include <cstdio>
 #include <algorithm>
+#include <tuple>
 
 namespace hf::design {
 
-void report_pretty(const ship& st, cmdline::fmt format);
+void report_pretty(const ship& st, cmdline::fmt format, int nresults);
 void report_csv(const ship& st, int k);
 
 static bool add_gun(ship& st, const char* str)
@@ -52,11 +53,14 @@ static bool add_gun(ship& st, const char* str)
     return true;
 }
 
-static void add_fixed(ship& st, int n)
+static void add_fixed(ship& st, const cmdline& params, int n)
 {
     constexpr int min_for_single_piece = 4;
 
-    st.add_part(e_d30s, n);
+    if (!params.use_big_engines)
+        st.add_part(e_d30s, n);
+    else
+        st.add_part(e_rd51, n);
 
     if (n < min_for_single_piece || n % 2 != 0)
     {
@@ -142,33 +146,55 @@ static bool filter_ship(const ship& st, const cmdline& params)
     return ret;
 }
 
+static void do_search1(const ship& st_, const cmdline& params, const std::tuple<int, int, int>& n, int& num_designs)
+{
+    auto [num_d30, num_nk25, num_rd58] = n;
+    for (int f = params.fixed_engines.min; f <= params.fixed_engines.max; f++)
+    {
+        ship st = st_;
+        st.mass += params.extra_mass;
+        st.power -= params.extra_power;
+        add_fixed(st, params, f);
+        st.add_part(e_d30, num_d30);
+        st.add_part(e_nk25, num_nk25);
+        if (!add_fuel(st, params))
+            continue;
+        add_power(st);
+        add_armor(st, params);
+
+        if (!filter_ship(st, params))
+            continue;
+
+        if (params.format == params.fmt_csv)
+            report_csv(st, num_designs++);
+        else
+            report_pretty(st, params.format, num_designs++);
+    }
+}
+
 static void do_search(const ship& st_, const cmdline& params, int& num_designs)
 {
-    for (int k = std::max(0, params.fixed_engines.min); k <= params.fixed_engines.max; k++)
-        for (int i = std::max(1, params.engines.min); i <= params.engines.max; i++)
-            for (int j = 0; j <= i; j++)
+    const int N = params.engines.max;
+
+    if (params.use_big_engines)
+        for (int num_d30 = 0; num_d30 <= N; num_d30++)
+            for (int num_nk25 = 0; num_nk25 <= N - num_d30; num_nk25++)
+                for (int num_rd58 = 0; num_rd58 <= N - num_d30 - num_nk25; num_rd58++)
+                {
+                    if (num_d30 + num_nk25 + num_rd58 < params.engines.min)
+                        continue;
+                    do_search1(st_, params, { num_d30, num_nk25, num_rd58 }, num_designs);
+                    if (num_designs >= params.num_matches)
+                        return;
+                }
+    else
+        for (int num_d30 = 0; num_d30 <= N; num_d30++)
+            for (int num_nk25 = 0; num_nk25 <= N - num_d30; num_nk25++)
             {
-                int num_d30 = j, num_nk25 = i-j;
-                ship st = st_;
-                st.mass += params.extra_mass;
-                st.power -= params.extra_power;
-                add_fixed(st, k);
-                st.add_part(e_d30, num_d30);
-                st.add_part(e_nk25, num_nk25);
-                if (!add_fuel(st, params))
+                if (num_d30 + num_nk25 < params.engines.min)
                     continue;
-                add_power(st);
-                add_armor(st, params);
-
-                if (!filter_ship(st, params))
-                    continue;
-
-                if (params.format == params.fmt_csv)
-                    report_csv(st, num_designs);
-                else
-                    report_pretty(st, params.format);
-
-                if (++num_designs >= params.num_matches)
+                do_search1(st_, params, { num_d30, num_nk25, 0 }, num_designs);
+                if (num_designs >= params.num_matches)
                     return;
             }
 }
@@ -197,12 +223,18 @@ extern "C" int main(int argc, char** argv)
                 params.terminate(EX_USAGE);
             }
         int nresults = 0;
-        do_search(st, params, nresults);
-        if (params.use_big_tanks)
         {
-            params.use_big_tanks = false;
-            do_search(st, params, nresults);
+            int big_tanks = params.use_big_tanks;
+            int big_engines = params.use_big_engines;
+            for (int i = 0; i < 1 + big_tanks; i++)
+                for (int j = 0; j < 1 + big_engines; j++)
+                {
+                    params.use_big_tanks = i;
+                    params.use_big_engines = j;
+                    do_search(st, params, nresults);
+                }
         }
+
         if (nresults == 0)
         {
             WARN("no designs could be generated within the constraints.");

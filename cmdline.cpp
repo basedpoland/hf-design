@@ -162,22 +162,24 @@ float cmdline::get_float(float min, float max) const
 void cmdline::usage(const char* argv0)
 {
     constexpr const char* opts[][2] = {
-        { "-f <int>", "fixed thruster count" },
-        { "-t <float>", "minimum twr" },
-        { "-e <int>", "max maneuvering engines"},
-        { "-u <tons>", "max fuel consumption"},
-        { "-T <secs>", "min combat time" },
-        { "-c <int>", "max cost"},
-        { "-a <float>", "layers of armor assuming square ship"},
-        { "-x <int>", "fire extinguisher amount" },
+        { "-f <int>",   "fixed thruster count"                  },
+        { "-t <float>", "minimum twr"                           },
+        { "-e <int>",   "max maneuvering engines"               },
+        { "-u <tons>",  "max fuel consumption"                  },
+        { "-T <secs>",  "min combat time"                       },
+        { "-c <int>",   "max cost"                              },
+        { "-a <float>", "layers of armor assuming square ship"  },
+        { "-x <int>",   "fire extinguisher amount"              },
+        { "-b",         "enable large tanks"                    },
+        { "-B",         "enable large engines"                  },
         {},
-        { "-F <pretty|line|verbose>", "output format"},
-        { "-1", "exit immediately upon finding a match" },
-        { "-n", "output limit"},
-        { "-h, -?", "this screen" },
-        { "-G", "help with gun names" },
+        { "-F <pretty|line|verbose>", "output format"           },
+        { "-1", "exit immediately upon finding a match"         },
+        { "-n", "output limit"                                  },
+        { "-h, -?", "this screen"                               },
+        { "-G", "help with gun names"                           },
         {},
-        { "count:gun...", "use these guns on this ship" },
+        { "count:gun...", "use these guns on this ship"         },
     };
     synopsis(argv0);
     printf("this program generates HighFleet part lists.\n\n");
@@ -216,7 +218,7 @@ cmdline cmdline::parse_options(int argc, const char* const* argv)
     cmdline p{argc, argv};
     opterr = 1;
 
-    while ((c = musl_getopt(argc, argv, "f:t:e:u:T:c:hG1a:n:x:F:bm:p:")) != -1)
+    while ((c = musl_getopt(argc, argv, "f:t:e:u:T:c:hG1a:n:x:F:bm:p:B:")) != -1)
         switch (c)
         {
         default:
@@ -246,6 +248,7 @@ cmdline cmdline::parse_options(int argc, const char* const* argv)
         case 'b': p.use_big_tanks = true; break;
         case 'm': p.extra_mass += p.get_float(-1e12f, 1e12f); break;
         case 'p': p.extra_power += p.get_float(0, 1e3f); break;
+        case 'B': p.use_big_engines = true; p.use_big_tanks = true; break;
         }
 ok:
     return p;

@@ -8,13 +8,15 @@
 
 namespace hf::design {
 
-void report_pretty(const ship& st, cmdline::fmt format)
+void report_pretty(const ship& st, cmdline::fmt format, int)
 {
     const auto& part_names = part::all_parts();
-    const std::tuple<const char*, const part&, int> engine_parts[] = {
-        { "d30s",   e_d30s,     2 },
-        { "d30",    e_d30,      2 },
-        { "nk25",   e_nk25,     2 },
+    const std::tuple<const char*, const part&> engine_parts[] = {
+        { "d30s",   e_d30s  },
+        { "d30",    e_d30   },
+        { "nk25",   e_nk25  },
+        { "rd51",   e_rd51  },
+        { "rd59",   e_rd59  },
     };
 
     printf("mass: %5.0f area:%4d cost:%6d twr:%4.1f time:%4.0f",
@@ -29,8 +31,9 @@ void report_pretty(const ship& st, cmdline::fmt format)
     else
     {
         printf(" |");
-        for (const auto& [name, x, ndigits] : engine_parts)
-            printf(" %s:%*d", name, -ndigits, st.count(x));
+        for (const auto& [name, x] : engine_parts)
+            if (int cnt = st.count(x); cnt)
+                printf(" %s:%-2d", name, cnt);
         printf(" pwr:%d,%d", st.count(pwr_1x2), st.count(pwr_2x2));
         printf(" tank:%2d,0(%-4.0ft)", st.count(tank_1x2), (double)(st.count(tank_1x2) * tank_1x2.mass)); // TODO big tank
         printf(" legs:%d,%d", st.count(leg1), st.count(leg2));
