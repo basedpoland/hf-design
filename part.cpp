@@ -77,6 +77,7 @@ const part& part::find_hull(const part& x)
     case sz_1x1: return h_1x1;
     case sz_1x2: return h_1x2;
     case sz_2x2: return h_2x2;
+    case sz_4x4: return h_4x4;
     case sz_cor: return h_cor;
     case sz_bigfuel:
         return h_null;

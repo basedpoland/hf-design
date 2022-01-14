@@ -3,7 +3,7 @@
 
 namespace hf::design {
 
-enum part_size : int { sz_1x1 = 1, sz_2x2 = 4, sz_1x2 = 2, sz_bigfuel = -16, sz_cor = -4, sz_nan = 0};
+enum part_size : int { sz_1x1 = 1, sz_2x2 = 4, sz_1x2 = 2, sz_4x4 = 16, sz_bigfuel = -16, sz_cor = -4, sz_nan = 0};
 
 struct part final
 {
