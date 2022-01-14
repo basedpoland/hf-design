@@ -237,11 +237,11 @@ cmdline cmdline::parse_options(int argc, const char* const* argv)
         case 'u': p.fuel_usage.parse(c); break;
         case 'T': p.combat_time = p.get_int(1, 1 << 16); break;
         case 'c': p.cost.parse(c); break;
-        case '1': p.num_matches = 1; break;
-        case 'n': p.num_matches = p.get_int(0); if (!p.num_matches) p.num_matches = INT_MAX; break;
-        case 'a': p.armor_layers = p.get_float(0, 16); break;
-        case 'x': p.num_extinguishers = p.get_int(0, 255); break;
         case 'G': p.gun_list(); terminate(0);
+        case '1': p.num_matches = 1; break;
+        case 'a': p.armor_layers = p.get_float(0, 16); break;
+        case 'n': p.num_matches = p.get_int(0); if (!p.num_matches) p.num_matches = INT_MAX; break;
+        case 'x': p.num_extinguishers = p.get_int(0, 255); break;
         case 'F': p.format = p.parse_format(optarg); break;
         case 'b': p.use_big_tanks = true; break;
         case 'm': p.extra_mass += p.get_float(-1e12f, 1e12f); break;
