@@ -4,7 +4,7 @@
 
 namespace hf::design {
 
-enum class range_behavior : unsigned char { min, max };
+enum class range_behavior : unsigned char { min, max, same };
 
 template<typename t>
 struct range final
@@ -43,11 +43,11 @@ struct cmdline final
     irange engines{1, 32, range_behavior::max};
     int combat_time = 200;
     irange cost{0, int_max, range_behavior::max};
+    irange fixed_engines{4, 4, range_behavior::same};
 
     float armor_layers = 0;
     const char* const* argv = nullptr;
     int argc = 0;
-    int fixed_engine_count = 0;
     int num_matches = std::numeric_limits<int>::max();
     int num_extinguishers = 2;
     fmt format = fmt_default;

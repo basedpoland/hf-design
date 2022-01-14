@@ -52,19 +52,18 @@ static bool add_gun(ship& st, const char* str)
     return true;
 }
 
-static void add_fixed(ship& st, const cmdline& params)
+static void add_fixed(ship& st, int n)
 {
     constexpr int min_for_single_piece = 4;
 
-    if (params.fixed_engine_count < min_for_single_piece ||
-        params.fixed_engine_count % 2 != 0)
+    if (n < min_for_single_piece || n % 2 != 0)
     {
         st.add_part(chassis_2, 2);
         st.add_part_(chassis_1, 2, ship::area_disabled);
     }
     else
     {
-        st.add_part(e_d30s, params.fixed_engine_count);
+        st.add_part(e_d30s, n);
         st.add_part(chassis_2, 1); // gear connected to corner piece
         st.add_part_(chassis_2, 5, ship::area_disabled); // connected to other gear
         st.add_part_(chassis_1, 2, ship::area_disabled); // small legs for landing stability
@@ -144,32 +143,31 @@ static bool filter_ship(const ship& st, const cmdline& params)
 
 static void do_search(const ship& st_, const cmdline& params, int& num_designs)
 {
-    // there are only two vectoring engine types, so simply:
-    for (int i = std::max(1, params.engines.min); i <= params.engines.max; i++)
-    {
-        for (int j = 0; j <= i; j++)
-        {
-            int num_d30 = j, num_nk25 = i-j;
-            ship st = st_;
-            st.add_part(e_d30, num_d30);
-            st.add_part(e_nk25, num_nk25);
-            if (!add_fuel(st, params))
-                continue;
-            add_power(st);
-            add_armor(st, params);
+    for (int k = std::max(0, params.fixed_engines.min); k <= params.fixed_engines.max; k++)
+        for (int i = std::max(1, params.engines.min); i <= params.engines.max; i++)
+            for (int j = 0; j <= i; j++)
+            {
+                int num_d30 = j, num_nk25 = i-j;
+                ship st = st_;
+                add_fixed(st, k);
+                st.add_part(e_d30, num_d30);
+                st.add_part(e_nk25, num_nk25);
+                if (!add_fuel(st, params))
+                    continue;
+                add_power(st);
+                add_armor(st, params);
 
-            if (!filter_ship(st, params))
-                continue;
+                if (!filter_ship(st, params))
+                    continue;
 
-            if (params.format == params.fmt_csv)
-                report_csv(st, num_designs);
-            else
-                report_pretty(st, params.format);
+                if (params.format == params.fmt_csv)
+                    report_csv(st, num_designs);
+                else
+                    report_pretty(st, params.format);
 
-            if (++num_designs >= params.num_matches)
-                return;
-        }
-    }
+                if (++num_designs >= params.num_matches)
+                    return;
+            }
 
     if (num_designs == 0)
         WARN("no designs could be generated within the constraints.");
@@ -190,7 +188,6 @@ extern "C" int main(int argc, char** argv)
 
         ship st;
         auto params = cmdline::parse_options(argc, argv);
-        add_fixed(st, params);
         if (musl_optind == argc)
             cmdline::usage(argv[0]);
         for (int i = musl_optind; i < argc; i++)

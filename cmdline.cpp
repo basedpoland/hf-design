@@ -61,10 +61,14 @@ static std::tuple<t, t, bool> parse_range_(const char* str, range_behavior r)
         auto x = string_to_type<t>(str, &endptr);
         if (*endptr || errno)
             return {};
-        if (r == range_behavior::max)
-            return { min, x, true };
-        else
-            return { x, max, true };
+        switch (r)
+        {
+        default:
+        case range_behavior::same: return { x, x, true  };
+        case range_behavior::max:  return { min, x, true };
+        case range_behavior::min:  return { x, max, true };
+        }
+
     }
     else if (sep - str == 0) // inf -> x
     {
@@ -227,7 +231,7 @@ cmdline cmdline::parse_options(int argc, const char* const* argv)
             goto error;
         case 'h':
             usage(argv[0]);
-        case 'f': p.fixed_engine_count = p.get_int(0, 255); break;
+        case 'f': p.fixed_engines.parse(c); break;
         case 't': p.twr.parse(c); break;
         case 'e': p.engines.parse(c); break;
         case 'u': p.fuel_usage.parse(c); break;
