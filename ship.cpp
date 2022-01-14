@@ -53,8 +53,7 @@ void ship::add_part(const part& x, int count)
     add_part_(x, count);
     const auto& hull = part::find_hull(x);
 
-    if (hull == null_part)
-        std::abort();
+    assert(hull != null_part);
     if (hull != h_null)
         add_part_(hull, count, area_disabled);
 }

@@ -87,7 +87,7 @@ static bool add_fuel(ship& st, const cmdline& params)
     int sneaky_tanks = std::min(st.sneaky_corners_left / 2, num_tanks); // use the cornerless 2x2 pieces to stick in extra tanks
     num_tanks -= sneaky_tanks;
     st.sneaky_corners_left -= sneaky_tanks*2;
-    assert(sneaky_tanks >= 0); assert(num_tanks >= 0);
+    assert(sneaky_tanks >= 0); assert(num_tanks >= 0); assert(st.sneaky_corners_left >= 0);
     st.add_part(tank_1x2, num_tanks);
     st.add_part_(tank_1x2, sneaky_tanks, ship::area_disabled);
     st.add_part_(h_05, sneaky_tanks*2, ship::area_disabled);
