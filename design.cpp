@@ -168,9 +168,6 @@ static void do_search(const ship& st_, const cmdline& params, int& num_designs)
                 if (++num_designs >= params.num_matches)
                     return;
             }
-
-    if (num_designs == 0)
-        WARN("no designs could be generated within the constraints.");
 }
 
 extern "C" int main(int argc, char** argv)
@@ -202,6 +199,11 @@ extern "C" int main(int argc, char** argv)
         {
             params.use_big_tanks = false;
             do_search(st, params, nresults);
+        }
+        if (nresults == 0)
+        {
+            WARN("no designs could be generated within the constraints.");
+            return 1;
         }
         return 0;
     } catch (const exit_status& x) {
