@@ -28,7 +28,6 @@ struct cmdline final
     enum fmt : char {
         fmt_pretty = 1,
         fmt_csv,
-        fmt_verbose,
         fmt_default = fmt_pretty
     };
 

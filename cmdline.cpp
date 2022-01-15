@@ -172,11 +172,11 @@ void cmdline::usage(const char* argv0)
         { "-b",         "enable large tanks"                    },
         { "-B",         "enable large engines"                  },
         {},
-        { "-F <pretty|line|verbose>", "output format"           },
         { "-1", "exit immediately upon finding a match"         },
         { "-n", "output limit"                                  },
         { "-h, -?", "this screen"                               },
         { "-G", "help with gun names"                           },
+        { "-F <pretty|csv>",            "output format"                         },
         {},
         { "count:gun...", "use these guns on this ship"         },
     };
@@ -261,7 +261,6 @@ cmdline::fmt cmdline::parse_format(const char* str) const
     const std::pair<const char*, fmt> formats[] = {
         { "pretty",     fmt_pretty  },
         { "csv",        fmt_csv     },
-        { "verbose",    fmt_verbose },
     };
     for (const auto& [name, fmt] : formats)
         if (!strcmp(str, name))
