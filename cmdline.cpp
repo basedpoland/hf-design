@@ -13,15 +13,6 @@
 #include <utility>
 #include <tuple>
 
-#ifdef _WIN32
-#   include <malloc.h>
-#   ifdef _MSC_VER
-#       define alloca _alloca
-#endif
-#else
-#   include <alloca.h>
-#endif
-
 #define optarg musl_optarg
 #define optind musl_optind
 #define opterr musl_opterr
