@@ -218,7 +218,7 @@ cmdline cmdline::parse_options(int argc, const char* const* argv)
     cmdline p{argc, argv};
     opterr = 1;
 
-    while ((c = musl_getopt(argc, argv, "f:t:e:u:T:c:hG1a:n:x:F:bm:p:B:")) != -1)
+    while ((c = musl_getopt(argc, argv, "f:t:e:u:T:c:hG1a:n:x:F:bm:p:B")) != -1)
         switch (c)
         {
         default:

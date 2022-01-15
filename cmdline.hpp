@@ -32,11 +32,10 @@ struct cmdline final
         fmt_default = fmt_pretty
     };
 
-    static constexpr auto float_max = std::numeric_limits<float>::min();
-    static constexpr auto float_min = std::numeric_limits<float>::max();
-
+    static constexpr auto float_min = std::numeric_limits<float>::min();
+    static constexpr auto float_max = std::numeric_limits<float>::max();
+    static constexpr auto int_min = std::numeric_limits<int>::min();
     static constexpr auto int_max = std::numeric_limits<int>::max();
-    static constexpr auto int_min = std::numeric_limits<int>::max();
 
     frange twr{1.1f, float_max};
     frange fuel_usage{0, 1000, range_behavior::max};
