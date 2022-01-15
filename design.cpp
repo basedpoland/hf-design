@@ -181,8 +181,6 @@ static void do_search(const ship& st_, const cmdline& params, int& num_designs)
                 for (int num_nk25 = 0; num_nk25 <= N - num_d30; num_nk25++)
                 {
                         int num_rd58 = N - num_d30 - num_nk25;
-                        assert(num_d30 + num_nk25 + num_rd58 >= params.engines.min &&
-                               num_d30 + num_nk25 + num_rd58 <= params.engines.max);
                         do_search1(st_, params, { num_d30, num_nk25, num_rd58 }, num_designs);
                         if (num_designs >= params.num_matches)
                             return;
@@ -192,8 +190,6 @@ static void do_search(const ship& st_, const cmdline& params, int& num_designs)
             for (int num_d30 = 0; num_d30 <= N; num_d30++)
             {
                 int num_nk25 = N - num_d30;
-                assert(num_d30 + num_nk25 >= params.engines.min &&
-                       num_d30 + num_nk25 <= params.engines.max);
                 do_search1(st_, params, { num_d30, num_nk25, 0 }, num_designs);
                 if (num_designs >= params.num_matches)
                     return;
