@@ -1,5 +1,6 @@
 #pragma once
 #include <limits>
+#include <array>
 #include <tuple>
 
 namespace hf::design {
@@ -36,6 +37,8 @@ struct cmdline final
     static constexpr auto int_min = std::numeric_limits<int>::min();
     static constexpr auto int_max = std::numeric_limits<int>::max();
 
+    using chassis_layout = std::tuple<int, std::array<int, 4>>;
+
     frange twr{1.1f, float_max};
     irange engines{1, 32, range_behavior::max};
     frange fuel_usage{0, float_max, range_behavior::max};
@@ -43,6 +46,7 @@ struct cmdline final
     irange cost{0, int_max, range_behavior::max};
     irange fixed_engines{2, 6, range_behavior::same};
     float power = 1;
+    chassis_layout chassis = {-1, { 0, 0, 0, 0} };
 
     float armor_layers = 0;
     float extra_mass = 0;
@@ -66,6 +70,7 @@ struct cmdline final
     static void synopsis(const char* argv0);
     [[noreturn]] static void usage(const char* argv0);
     [[noreturn]] static void terminate(int status);
+    chassis_layout parse_chassis_layout(const char* str);
 
 private:
     cmdline() = default;

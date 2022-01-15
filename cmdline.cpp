@@ -170,6 +170,7 @@ void cmdline::usage(const char* argv0)
         { "-m",                         "add extra mass"                        },
         { "-p",                         "add extra power requirement"           },
         { "-P <float>",                 "provide less than 100% power"          },
+        { "-C [<nlegs>:]n1,n2,n3,n4",   "how many chassis parts to use"         },
         {},
         { "-F <pretty|csv>",            "output format"                         },
         { "-1", "exit immediately upon finding a match"                         },
@@ -216,7 +217,7 @@ cmdline cmdline::parse_options(int argc, const char* const* argv)
     cmdline p{argc, argv};
     opterr = 1;
 
-    while ((c = musl_getopt(argc, argv, "f:t:e:u:T:c:hG1a:n:x:F:bm:p:BP:")) != -1)
+    while ((c = musl_getopt(argc, argv, "f:t:e:u:T:c:hG1a:n:x:F:bm:p:BP:C:")) != -1)
         switch (c)
         {
         default:
@@ -249,6 +250,7 @@ cmdline cmdline::parse_options(int argc, const char* const* argv)
         case 'p': p.extra_power += p.get_float(0, 1e3f); break;
         case 'B': p.use_big_engines = true; p.use_big_tanks = true; break;
         case 'P': p.power = p.get_float(0, 1); break;
+        case 'C': p.chassis = p.parse_chassis_layout(optarg); break;
         }
 ok:
     return p;
@@ -268,6 +270,73 @@ cmdline::fmt cmdline::parse_format(const char* str) const
             return fmt;
 
     ERR("invalid output format -- '%s'", optarg);
+    seek_help();
+    terminate(EX_USAGE);
+}
+
+#define BAD_CHASSIS "invalid chassis spec -- "
+
+cmdline::chassis_layout cmdline::parse_chassis_layout(const char* str)
+{
+    char buf[64];
+    chassis_layout ret = { 0, { 0, 0, 0, 0 } };
+    auto& [nlegs, array] = ret;
+    char* pos;
+
+    auto parse = [this](const char* x) {
+        char* endptr;
+        errno = 0;
+        int ret = string_to_type<int>(x, &endptr);
+        if (endptr == x || *endptr || errno)
+            ERR(BAD_CHASSIS "can't parse integer at '%s'", x);
+        else if (ret < 0)
+            ERR(BAD_CHASSIS "must be non-negative integer");
+        else
+            return ret;
+
+        seek_help();
+        terminate(EX_USAGE);
+    };
+
+    if (strlen(str) >= sizeof(buf))
+    {
+        ERR(BAD_CHASSIS "invalid length");
+        goto error;
+    }
+    strcpy(buf, str);
+    buf[sizeof(buf)-1] = '\0';
+    pos = strchr(buf, ':');
+
+    if (pos)
+    {
+        *pos++ = '\0';
+        nlegs = parse(buf);
+
+        if (!*pos)
+        {
+            ERR(BAD_CHASSIS "missing part list");
+            goto error;
+        }
+    }
+    else
+        pos = buf;
+
+    for (unsigned i = 0; pos && i <= std::size(array); i++)
+    {
+        char* next = strchr(pos, ',');
+        if (i == std::size(array))
+        {
+            ERR(BAD_CHASSIS "too many elements in part list");
+            goto error;
+        }
+        if (next)
+            *next++ = '\0';
+        array[i] = parse(pos);
+        pos = next;
+    }
+
+    return ret;
+error:
     seek_help();
     terminate(EX_USAGE);
 }

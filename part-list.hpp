@@ -38,6 +38,8 @@ PART(h_4x4,     574.212,    0,      sz_nan, 80,                         );
 PART(fire,      31.3276,    0,      sz_1x2, 300                         );
 PART(leg1,      2.83583,    -0.05,  sz_nan, 50                          );
 PART(leg2,      17.9923,    -0.1,   sz_cor, 100                         );
+PART(leg3,      79.4193,    -0.2,   sz_cor, 200                         );
+PART(leg4,      237.679,    -0.4,   sz_cor, 400                         );
 PART(pwr_1x2,   43.3147,    2.8,    sz_1x2, 150                         );
 PART(pwr_2x2,   93.252,     6.1,    sz_2x2, 200                         );
 PART(null_part, 0,          0,      sz_nan, 0                           );

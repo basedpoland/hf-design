@@ -52,16 +52,31 @@ static bool add_gun(ship& st, const char* str)
     return true;
 }
 
-static void add_fixed(ship& st, const cmdline& params, int n)
+static void add_legs(ship& st, const cmdline& params)
 {
-    constexpr int min_for_single_piece = 4;
+    constexpr int min_engines_for_single_leg = 4;
 
-    if (!params.use_big_engines)
-        st.add_part(e_d30s, n);
-    else
-        st.add_part(e_rd51, n);
-
-    if (n < min_for_single_piece || n % 2 != 0)
+    auto [nlegs, chassis] = params.chassis;
+    int total = 0;
+    for (unsigned i = 0 ; i < std::size(chassis); i++)
+        total += chassis[i];
+    if (nlegs && !total)
+    {
+        ERR("invalid chassis specification");
+        params.seek_help();
+        params.terminate(EX_USAGE);
+    }
+    if (!nlegs && total)
+        nlegs = 2;
+    if (total)
+    {
+        const part* parts[] = { &leg1, &leg2, &leg3, &leg4 };
+        st.add_part_(h_cor, nlegs, ship::area_disabled);
+        for (unsigned i = 0; i < std::size(parts); i++)
+            st.add_part_(*parts[i], chassis[i], ship::area_disabled);
+    }
+    else if (int n = st.count(e_d30);
+             params.use_big_engines || n % 2 != 0 || n < min_engines_for_single_leg)
     {
         st.add_part(leg2, 2);
         st.add_part_(leg1, 2, ship::area_disabled);
@@ -72,6 +87,16 @@ static void add_fixed(ship& st, const cmdline& params, int n)
         st.add_part_(leg2, 6, ship::area_disabled); // connected to other gear
         st.add_part_(leg1, 2, ship::area_disabled); // small legs for landing stability
     }
+}
+
+static void add_fixed(ship& st, const cmdline& params, int n)
+{
+    if (!params.use_big_engines)
+        st.add_part(e_d30s, n);
+    else
+        st.add_part(e_rd51, n);
+
+    add_legs(st, params);
 }
 
 static bool add_fuel(ship& st, const cmdline& params)
