@@ -42,6 +42,7 @@ struct cmdline final
     int combat_time = 200;
     irange cost{0, int_max, range_behavior::max};
     irange fixed_engines{2, 6, range_behavior::same};
+    float power = 1;
 
     float armor_layers = 0;
     float extra_mass = 0;

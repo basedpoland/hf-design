@@ -217,7 +217,7 @@ cmdline cmdline::parse_options(int argc, const char* const* argv)
     cmdline p{argc, argv};
     opterr = 1;
 
-    while ((c = musl_getopt(argc, argv, "f:t:e:u:T:c:hG1a:n:x:F:bm:p:B")) != -1)
+    while ((c = musl_getopt(argc, argv, "f:t:e:u:T:c:hG1a:n:x:F:bm:p:BP:")) != -1)
         switch (c)
         {
         default:
@@ -248,6 +248,7 @@ cmdline cmdline::parse_options(int argc, const char* const* argv)
         case 'm': p.extra_mass += p.get_float(-1e12f, 1e12f); break;
         case 'p': p.extra_power += p.get_float(0, 1e3f); break;
         case 'B': p.use_big_engines = true; p.use_big_tanks = true; break;
+        case 'P': p.power = p.get_float(0, 1); break;
         }
 ok:
     return p;

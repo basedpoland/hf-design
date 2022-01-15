@@ -102,9 +102,9 @@ static bool add_fuel(ship& st, const cmdline& params)
     return true;
 }
 
-static void add_power(ship& st)
+static void add_power(ship& st, const cmdline& params)
 {
-    float power = -st.power;
+    float power = -st.power * params.power;
     ASSERT(power > 1e-6f);
     float x = std::fmod(power, pwr_2x2.power);
     if (x <= 2*pwr_1x2.power) // they weigh less than the full generator
@@ -158,7 +158,7 @@ static void do_search1(const ship& st_, const cmdline& params, const std::tuple<
         st.add_part(e_nk25, num_nk25);
         if (!add_fuel(st, params))
             continue;
-        add_power(st);
+        add_power(st, params);
         add_armor(st, params);
 
         if (!filter_ship(st, params))
