@@ -111,12 +111,13 @@ void cmdline::seek_help() const
     fprintf(stderr, "Try '%s -h' for more information.\n", argv[0]);
 }
 
-void cmdline::wrong_param() const
+void cmdline::wrong_param(const char* explain) const
 {
-    fprintf(stderr, "%s: invalid argument '%s' for '%s'\n",
+    fprintf(stderr, "%s: invalid argument '%s' for '%s'%s\n",
             argv[0],
             optarg ? optarg : "(null)",
-            argv[optind-2]);
+            argv[optind-2],
+            explain);
     seek_help();
     terminate(EX_USAGE);
 }
@@ -130,8 +131,10 @@ int cmdline::get_int(int min, int max) const
     int x = (int)std::strtol(optarg, &end, 10);
     if (end == optarg || *end || errno == ERANGE)
         wrong_param();
-    if (x < min || x > max)
-        wrong_param();
+    if (x < min)
+        wrong_param(" (too small)");
+    if (x > max)
+        wrong_param(" (too large)");
     return x;
 }
 
@@ -144,32 +147,34 @@ float cmdline::get_float(float min, float max) const
     float x = std::strtof(optarg, &end);
     if (end == optarg || *end || errno == ERANGE)
         wrong_param();
-    if (x < min || x > max)
-        wrong_param();
+    if (x < min)
+        wrong_param(" (too small)");
+    if (x > max)
+        wrong_param(" (too large)");
     return x;
 }
 
 void cmdline::usage(const char* argv0)
 {
     constexpr const char* opts[][2] = {
-        { "-f <int>",   "fixed thruster count"                  },
-        { "-t <float>", "minimum twr"                           },
-        { "-e <int>",   "max maneuvering engines"               },
-        { "-u <tons>",  "max fuel consumption"                  },
-        { "-T <secs>",  "min combat time"                       },
-        { "-c <int>",   "max cost"                              },
-        { "-a <float>", "layers of armor assuming square ship"  },
-        { "-x <int>",   "fire extinguisher amount"              },
-        { "-b",         "enable large tanks"                    },
-        { "-B",         "enable large engines"                  },
+        { "-f <int>",                   "fixed thruster count"                  },
+        { "-t <float>",                 "minimum twr"                           },
+        { "-e <int>",                   "max maneuvering engines"               },
+        { "-u <tons>",                  "max fuel consumption"                  },
+        { "-T <secs>",                  "min combat time"                       },
+        { "-c <int>",                   "max cost"                              },
+        { "-a <float>",                 "layers of armor assuming square ship"  },
+        { "-x <int>",                   "fire extinguisher amount"              },
+        { "-b",                         "enable large tanks"                    },
+        { "-B",                         "enable large engines"                  },
         {},
-        { "-1", "exit immediately upon finding a match"         },
-        { "-n", "output limit"                                  },
-        { "-h, -?", "this screen"                               },
-        { "-G", "help with gun names"                           },
         { "-F <pretty|csv>",            "output format"                         },
+        { "-1", "exit immediately upon finding a match"                         },
+        { "-n", "output limit"                                                  },
+        { "-h, -?", "this screen"                                               },
+        { "-G", "help with gun names"                                           },
         {},
-        { "count:gun...", "use these guns on this ship"         },
+        { "count:gun...", "use these guns on the ship"                          },
     };
     synopsis(argv0);
     printf("this program generates HighFleet part lists.\n\n");
@@ -180,7 +185,7 @@ void cmdline::usage(const char* argv0)
         else
             printf("  %-29s %s\n", x[0], x[1]);
     }
-    printf("\nexample: %s -f 6 -T 200 4:130mm\n", argv0);
+    printf("\nexample: %s -b -x 2 -e 4:16 -f 6 -T 200 -P 0.99 4:130mm\n", argv0);
     fflush(stdout);
     terminate(stdout == stderr ? EX_USAGE : 0);
 }
@@ -213,6 +218,7 @@ cmdline cmdline::parse_options(int argc, const char* const* argv)
         {
         default:
             ABORT("unhandled command-line argument -- '%c'(0x%x)'", (char)c, c);
+            break;
         case -1:
             if (optind == argc)
                 usage(argv[0]);

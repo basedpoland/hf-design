@@ -49,6 +49,7 @@ void ship::add_part_(const part& x, int count, area_mode amode)
 
 void ship::add_part(const part& x, int count)
 {
+    ASSERT(count >= 0);
     add_part_(x, count);
     const auto& hull = part::find_hull(x);
 

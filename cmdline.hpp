@@ -56,7 +56,7 @@ struct cmdline final
     bool use_big_engines = false;
 
     static cmdline parse_options(int argc, const char* const* argv);
-    [[noreturn]] void wrong_param() const;
+    [[noreturn]] void wrong_param(const char* explain = nullptr) const;
 
     int get_int(int min = 0, int max = 1 << 16) const;
     float get_float(float min = 0, float max = 1 << 16) const;

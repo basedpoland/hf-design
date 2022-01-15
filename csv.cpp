@@ -72,10 +72,7 @@ bool report_csv(const ship& st, int k)
     }
 
     line s{stdout};
-
-    auto print = [&] (const auto& x) {
-        s << x;
-    };
+    auto print = [&] (const auto& x) { s << x; };
 
     for (const auto& [_, x] : values)
         std::visit(print, x);
