@@ -38,11 +38,11 @@ struct cmdline final
     static constexpr auto int_max = std::numeric_limits<int>::max();
 
     frange twr{1.1f, float_max};
-    frange fuel_usage{0, 1000, range_behavior::max};
     irange engines{1, 32, range_behavior::max};
+    frange fuel_usage{0, float_max, range_behavior::max};
     int combat_time = 200;
     irange cost{0, int_max, range_behavior::max};
-    irange fixed_engines{4, 4, range_behavior::same};
+    irange fixed_engines{2, 6, range_behavior::same};
 
     float armor_layers = 0;
     float extra_mass = 0;
