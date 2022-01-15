@@ -189,7 +189,7 @@ void cmdline::usage(const char* argv0)
         else
             printf("  %-29s %s\n", x[0], x[1]);
     }
-    printf("\nexample: %s -b -x 2 -e 4:16 -f 6 -T 200 -P 0.99 4:130mm\n", argv0);
+    printf("\nexample: %s -F csv -b -x 2 -e 4:16 -f 4:8 -T 200 -P 0.99 -a 1.3 4:130mm\n", argv0);
     fflush(stdout);
     terminate(stdout == stderr ? EX_USAGE : 0);
 }
