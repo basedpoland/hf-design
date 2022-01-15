@@ -46,7 +46,7 @@ struct cmdline final
     irange cost{0, int_max, range_behavior::max};
     irange fixed_engines{2, 6, range_behavior::same};
     float power = 1;
-    chassis_layout chassis = {-1, { 0, 0, 0, 0} };
+    chassis_layout chassis = {0, { 0, 0, 0, 0} };
 
     float armor_layers = 0;
     float extra_mass = 0;
