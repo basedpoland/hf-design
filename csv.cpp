@@ -61,6 +61,8 @@ bool report_csv(const ship& st, int k)
         { "Power L",        count_of(pwr_2x2)                       },
         { "Leg(1)",         count_of(leg1),                         },
         { "Leg(2)",         count_of(leg2),                         },
+        { "Leg(3)",         count_of(leg3),                         },
+        { "Leg(4)",         count_of(leg4),                         },
     };
 
     if (k == 0)
