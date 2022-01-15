@@ -31,7 +31,7 @@ part::part(const char* name, double mass, double power, part_size size, int pric
     auto& parts = static_parts();
     auto it = std::lower_bound(parts.begin(), parts.end(), this, part_lessp);
     if (it != parts.end() && !strcmp(name, (**it).name))
-        BUG("duplicate part -- '%s' - %s", name, (**it).name);
+        ABORT("duplicate part -- '%s' - %s", name, (**it).name);
     parts.insert(it, this);
 }
 
@@ -40,7 +40,7 @@ part::~part()
     auto& parts = static_parts();
     auto it = std::lower_bound(parts.begin(), parts.end(), this, part_lessp);
     if (it == parts.end() || !!strcmp(name, (**it).name))
-        BUG("part not present in dtor -- '%s'", name);
+        ABORT("part not present in dtor -- '%s'", name);
     parts.erase(it);
 }
 

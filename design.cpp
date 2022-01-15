@@ -7,7 +7,6 @@
 #include "log.hpp"
 
 #include "getopt.h"
-#include <cassert>
 #include <cmath>
 #include <cstring>
 #include <cstdio>
@@ -77,7 +76,7 @@ static void add_fixed(ship& st, const cmdline& params, int n)
 
 static bool add_fuel(ship& st, const cmdline& params)
 {
-    assert(st.fuel_flow > 1e-6f);
+    ASSERT(st.fuel_flow > 1e-6f);
     int num_tanks = (int)std::ceil(st.fuel_flow * params.combat_time / tank_1x2.fuel);
     if (params.use_big_tanks)
     {
@@ -86,19 +85,19 @@ static bool add_fuel(ship& st, const cmdline& params)
         if (!num)
             return false;
         num_tanks -= (int)(num * ratio);
-        assert(num_tanks >= 0);
+        ASSERT(num_tanks >= 0);
         st.add_part_(tank_4x4, num);
     }
     int sneaky_tanks = std::min(st.sneaky_corners_left / 2, num_tanks); // use the cornerless 2x2 pieces to stick in extra tanks
     num_tanks -= sneaky_tanks;
     st.sneaky_corners_left -= sneaky_tanks*2;
-    assert(sneaky_tanks >= 0); assert(num_tanks >= 0); assert(st.sneaky_corners_left >= 0);
+    ASSERT(sneaky_tanks >= 0); ASSERT(num_tanks >= 0); ASSERT(st.sneaky_corners_left >= 0);
     st.add_part(tank_1x2, num_tanks);
     st.add_part_(tank_1x2, sneaky_tanks, ship::area_disabled);
     st.add_part_(h_05, sneaky_tanks*2, ship::area_disabled);
     st.add_part(fire, params.num_extinguishers);
 
-    assert(st.fuel > 0);
+    ASSERT(st.fuel > 0);
 
     return true;
 }
@@ -106,7 +105,7 @@ static bool add_fuel(ship& st, const cmdline& params)
 static void add_power(ship& st)
 {
     float power = -st.power;
-    assert(power > 1e-6f);
+    ASSERT(power > 1e-6f);
     float x = std::fmod(power, pwr_2x2.power);
     if (x <= 2*pwr_1x2.power) // they weigh less than the full generator
     {
@@ -128,10 +127,10 @@ static void add_armor(ship& st, const cmdline& params)
     for (const auto* part : static_engines)
     {
         int sz = std::abs(part->area());
-        assert(sz >= 1);
+        ASSERT(sz >= 1);
         circumference -= std::sqrt((float)sz) / 4;
     }
-    assert(circumference > 0);
+    ASSERT(circumference > 0);
     int num_armor = (int)std::ceil(circumference);
     st.add_part(arm_1x1, num_armor);
 }

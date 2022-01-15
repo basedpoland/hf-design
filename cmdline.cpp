@@ -6,7 +6,6 @@
 #include "part.hpp"
 #include "log.hpp"
 
-#include <cassert>
 #include <cerrno>
 #include <cstring>
 #include <cstdlib>
@@ -99,7 +98,7 @@ static std::tuple<t, t, bool> parse_range_(const char* str, range_behavior r)
 template<typename t>
 void range<t>::parse(int c)
 {
-    assert(optarg);
+    ASSERT(optarg);
 
     auto [min_, max_, ok] = parse_range_<t>(optarg, r);
     if (!ok)
@@ -222,7 +221,7 @@ cmdline cmdline::parse_options(int argc, const char* const* argv)
         switch (c)
         {
         default:
-            BUG("unhandled command-line argument -- '%c'(0x%x)'", (char)c, c);
+            ABORT("unhandled command-line argument -- '%c'(0x%x)'", (char)c, c);
         case -1:
             if (optind == argc)
                 usage(argv[0]);

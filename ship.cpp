@@ -2,7 +2,6 @@
 #include "ship.hpp"
 #include "part-list.hpp"
 #include "log.hpp"
-#include <cassert>
 
 namespace hf::design {
 
@@ -22,9 +21,9 @@ ship::ship()
 
 void ship::add_part_(const part& x, int count, area_mode amode)
 {
-    assert(count >= 0);
+    ASSERT(count >= 0);
     if (amode && x.area() <= 0)
-        BUG("add_part_() wrong area for part %s", x.name);
+        ABORT("add_part_() wrong area for part %s", x.name);
 
     mass += x.mass * count;
     power += x.power * count;
@@ -53,7 +52,7 @@ void ship::add_part(const part& x, int count)
     add_part_(x, count);
     const auto& hull = part::find_hull(x);
 
-    assert(hull != null_part);
+    ASSERT(hull != null_part);
     if (hull != h_null)
         add_part_(hull, count, area_disabled);
 }
