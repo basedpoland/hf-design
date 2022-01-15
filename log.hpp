@@ -11,18 +11,19 @@ struct logic_error final {
 
 }
 
-#define ABORT(...) ([&]() {                             \
-    ::hf::design::logic_error _e;                       \
-    _e.line = __LINE__;                                 \
-    _e.file = __FILE__;                                 \
-    std::snprintf(_e.msg, sizeof(_e.msg), __VA_ARGS__); \
-    throw _e; /*NOLINT*/                                \
+#define ABORT(...) ([&]() {                                     \
+    ::hf::design::logic_error _e;                               \
+    _e.line = __LINE__;                                         \
+    _e.file = __FILE__;                                         \
+    std::snprintf(_e.msg, sizeof(_e.msg), __VA_ARGS__);         \
+    throw _e; /*NOLINT*/                                        \
 }())
 
-#define ASSERT(expr)                                    \
-    do {                                                \
-        if (!(expr))                                    \
-            ABORT("assertion failed: %s", #expr);       \
+#define ASSERT(expr)                                            \
+    do {                                                        \
+        if (!(expr))                                            \
+            ABORT("assertion failed: %s in file %s line %d",    \
+                  #expr, __FILE__, __LINE__);                   \
     } while(false)
 
 #define debug_out_(pfx, ...) ([&]() {       \
