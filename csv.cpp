@@ -35,7 +35,7 @@ template<> void line::write(int x) { fprintf(stream, "%d", x); }
 template<> void line::write(char x) { putc(x, stream); }
 template<> void line::write(const char* x) { fprintf(stream, "%s", x); }
 
-void report_csv(const ship& st, int k)
+bool report_csv(const ship& st, int k)
 {
     using variant = std::variant<int, float, float_with_format>;
     auto mass_of = [&](const part& x) { return st.count(x) * x.mass; };
@@ -80,6 +80,8 @@ void report_csv(const ship& st, int k)
     for (const auto& [_, x] : values)
         std::visit(print, x);
     putchar('\n');
+
+    return true;
 }
 
 } // namespace hf::design

@@ -15,8 +15,8 @@
 
 namespace hf::design {
 
-void report_pretty(const ship& st, cmdline::fmt format, int nresults);
-void report_csv(const ship& st, int k);
+bool report_pretty(const ship& st, cmdline::fmt format, int nresults);
+bool report_csv(const ship& st, int k);
 
 static bool add_gun(ship& st, const char* str)
 {
@@ -164,10 +164,12 @@ static void do_search1(const ship& st_, const cmdline& params, const std::tuple<
         if (!filter_ship(st, params))
             continue;
 
-        if (params.format == params.fmt_csv)
-            report_csv(st, num_designs++);
-        else
-            report_pretty(st, params.format, num_designs++);
+        if (params.format == params.fmt_csv && report_csv(st, num_designs) ||
+            params.format == params.fmt_pretty && report_pretty(st, params.format, num_designs))
+            num_designs++;
+
+        if (num_designs >= params.num_matches)
+            return;
     }
 }
 

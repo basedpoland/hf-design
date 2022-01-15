@@ -8,7 +8,7 @@
 
 namespace hf::design {
 
-void report_pretty(const ship& st, cmdline::fmt format, int)
+bool report_pretty(const ship& st, cmdline::fmt format, int)
 {
     const auto& part_names = part::all_parts();
     const std::tuple<const char*, const part&> engine_parts[] = {
@@ -40,6 +40,8 @@ void report_pretty(const ship& st, cmdline::fmt format, int)
         printf(" armor:%4.0f", (double)std::round(st.count(arm_1x1) * arm_1x1.mass));
         printf(".\n");
     }
+
+    return true;
 }
 
 } // namespace hf::design
