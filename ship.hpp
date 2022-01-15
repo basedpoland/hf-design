@@ -8,7 +8,7 @@ struct part;
 
 struct ship final
 {
-    enum area_mode : bool { area_disabled = false, area_enabled = true };
+    enum area_mode : unsigned char { area_disabled = false, area_enabled = true };
 
     float mass = 0, power = 0, fuel = 0, fuel_flow = 0, thrust = 0;
     int area = 0, cost = 0, sneaky_corners_left = 0;
