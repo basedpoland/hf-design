@@ -172,7 +172,8 @@ static bool filter_ship(const ship& st, const cmdline& params)
 
 static void do_search1(const ship& st_, const cmdline& params, const std::tuple<int, int, int>& n, int& num_designs)
 {
-    auto [num_d30, num_nk25, num_rd58] = n;
+    auto [num_d30, num_nk25, num_rd59] = n;
+
     for (int f = params.fixed_engines.min; f <= params.fixed_engines.max; f++)
     {
         ship st = st_;
@@ -181,6 +182,7 @@ static void do_search1(const ship& st_, const cmdline& params, const std::tuple<
         add_fixed(st, params, f);
         st.add_part(e_d30, num_d30);
         st.add_part(e_nk25, num_nk25);
+        st.add_part(e_rd59, num_rd59);
         if (!add_fuel(st, params))
             continue;
         add_power(st, params);
@@ -205,10 +207,10 @@ static void do_search(const ship& st_, const cmdline& params, int& num_designs)
             for (int num_d30 = 0; num_d30 <= N; num_d30++)
                 for (int num_nk25 = 0; num_nk25 <= N - num_d30; num_nk25++)
                 {
-                        int num_rd58 = N - num_d30 - num_nk25;
-                        do_search1(st_, params, { num_d30, num_nk25, num_rd58 }, num_designs);
-                        if (num_designs >= params.num_matches)
-                            return;
+                    int num_rd59 = N - num_d30 - num_nk25;
+                    do_search1(st_, params, { num_d30, num_nk25, num_rd59 }, num_designs);
+                    if (num_designs >= params.num_matches)
+                        return;
                 }
     else
         for (int N = params.engines.min; N <= params.engines.max; N++)
@@ -246,15 +248,12 @@ extern "C" int main(int argc, char** argv)
             }
         int nresults = 0;
         {
-            int big_tanks = params.use_big_tanks;
-            int big_engines = params.use_big_engines;
-            for (int i = 0; i < 1 + big_tanks; i++)
-                for (int j = 0; j < 1 + big_engines; j++)
-                {
-                    params.use_big_tanks = i;
-                    params.use_big_engines = j;
-                    do_search(st, params, nresults);
-                }
+            do_search(st, params, nresults);
+            if (params.use_big_tanks)
+            {
+                params.use_big_tanks = false;
+                do_search(st, params, nresults);
+            }
         }
 
         if (nresults == 0)
