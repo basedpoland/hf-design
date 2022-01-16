@@ -11,7 +11,7 @@ template<typename t> t string_to_type(const char* str, char** endptr);
 extern template int string_to_type<int>(const char* str, char** endptr);
 extern template float string_to_type<float>(const char* str, char** endptr);
 
-enum class range_behavior : unsigned char { min, max, same };
+enum class range_behavior : unsigned char { min, max, equal };
 
 template<typename t> std::tuple<t, t, bool> parse_range(const char* str, range_behavior r);
 

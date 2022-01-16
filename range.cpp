@@ -31,7 +31,7 @@ std::tuple<t, t, bool> parse_range(const char* str, range_behavior r)
         switch (r)
         {
         default:
-        case range_behavior::same: return { x, x, true  };
+        case range_behavior::equal: return { x, x, true  };
         case range_behavior::max:  return { min, x, true };
         case range_behavior::min:  return { x, max, true };
         }
