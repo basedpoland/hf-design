@@ -89,16 +89,6 @@ static void add_legs(ship& st, const cmdline& params)
     }
 }
 
-static void add_fixed(ship& st, const cmdline& params, int n)
-{
-    if (!params.use_big_engines)
-        st.add_part(e_d30s, n);
-    else
-        st.add_part(e_rd51, n);
-
-    add_legs(st, params);
-}
-
 static bool add_fuel(ship& st, const cmdline& params)
 {
     ASSERT(st.fuel_flow > 1e-6f);
@@ -168,57 +158,64 @@ static bool filter_ship(const ship& st, const cmdline& params)
            params.horizontal_twr.check(st.horizontal_twr());
 }
 
-static void do_search1(const ship& st_, ship& st, const cmdline& params, const std::tuple<int, int, int>& n, int& num_designs)
+static void do_search1(const ship& st_, ship& st, const cmdline& params, const std::tuple<int, int, int, int, int>& n, int& num_designs)
 {
-    auto [num_d30, num_nk25, num_rd59] = n;
+    auto [num_d30s, num_rd51, num_d30, num_nk25, num_rd59] = n;
 
-    for (int f = params.fixed_engines.min; f <= params.fixed_engines.max; f++)
+    st = st_;
+    st.mass += params.extra_mass;
+    st.power -= params.extra_power;
+    add_legs(st, params);
+    st.add_part(e_d30s, num_d30s);
+    st.add_part(e_rd51, num_rd51);
+    st.add_part(e_d30, num_d30);
+    st.add_part(e_nk25, num_nk25);
+    st.add_part(e_rd59, num_rd59);
+    if (!add_fuel(st, params))
+        return;
+    add_power(st, params);
+    add_armor(st, params);
+
+    if (!filter_ship(st, params))
+        return;
+
+    switch (params.format)
     {
-        st = st_;
-        st.mass += params.extra_mass;
-        st.power -= params.extra_power;
-        add_fixed(st, params, f);
-        st.add_part(e_d30, num_d30);
-        st.add_part(e_nk25, num_nk25);
-        st.add_part(e_rd59, num_rd59);
-        if (!add_fuel(st, params))
-            continue;
-        add_power(st, params);
-        add_armor(st, params);
-
-        if (!filter_ship(st, params))
-            continue;
-
-        if (params.format == params.fmt_csv && report_csv(st, num_designs) ||
-            params.format == params.fmt_pretty && report_pretty(st, num_designs))
-            num_designs++;
-
-        if (num_designs >= params.num_matches)
-            return;
+    case params.fmt_csv:
+        report_csv(st, num_designs) && num_designs++; break;
+    case params.fmt_pretty:
+        report_pretty(st, num_designs) && num_designs++; break;
     }
+
+    if (num_designs >= params.num_matches)
+        return;
 }
 
 static void do_search(const ship& st_, ship& st, const cmdline& params, int& num_designs)
 {
     if (params.use_big_engines)
-        for (int N = params.engines.min; N <= params.engines.max; N++)
-            for (int num_d30 = 0; num_d30 <= N; num_d30++)
-                for (int num_nk25 = 0; num_nk25 <= N - num_d30; num_nk25++)
+        for (int F = params.fixed_engines.min; F <= params.engines.max; F++)
+            for (int num_d30s = 0; num_d30s <= F; num_d30s++)
+                for (int N = params.engines.min; N <= params.engines.max; N++)
+                    for (int num_d30 = 0; num_d30 <= N; num_d30++)
+                        for (int num_nk25 = 0; num_nk25 <= N - num_d30; num_nk25++)
+                        {
+                            int num_rd59 = N - num_d30 - num_nk25;
+                            int num_rd51 = F - num_d30s;
+                            do_search1(st_, st, params, { num_d30s, num_rd51, num_d30, num_nk25, num_rd59 }, num_designs);
+                            if (num_designs >= params.num_matches)
+                                return;
+                        }
+    else
+        for (int num_d30s = params.fixed_engines.min; num_d30s <= params.engines.max; num_d30s++)
+            for (int N = params.engines.min; N <= params.engines.max; N++)
+                for (int num_d30 = 0; num_d30 <= N; num_d30++)
                 {
-                    int num_rd59 = N - num_d30 - num_nk25;
-                    do_search1(st_, st, params, { num_d30, num_nk25, num_rd59 }, num_designs);
+                    int num_nk25 = N - num_d30;
+                    do_search1(st_, st, params, { num_d30s, 0, num_d30, num_nk25, 0 }, num_designs);
                     if (num_designs >= params.num_matches)
                         return;
                 }
-    else
-        for (int N = params.engines.min; N <= params.engines.max; N++)
-            for (int num_d30 = 0; num_d30 <= N; num_d30++)
-            {
-                int num_nk25 = N - num_d30;
-                do_search1(st_, st, params, { num_d30, num_nk25, 0 }, num_designs);
-                if (num_designs >= params.num_matches)
-                    return;
-            }
 }
 
 extern "C" int main(int argc, char** argv)
