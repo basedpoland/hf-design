@@ -10,7 +10,7 @@ struct exit_status final
 };
 
 inline void terminate(int status) { throw exit_status(status); }
-}
+} // namespace hf::design
 
 #ifndef _WIN32
 #   include <sysexits.h>
