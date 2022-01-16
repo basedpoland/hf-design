@@ -2,7 +2,6 @@
 #include "part-list.hpp"
 #include "log.hpp"
 #include "defs.hpp"
-#include "cmdline.hpp"
 #include <cstring>
 #include <algorithm>
 
