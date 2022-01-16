@@ -18,8 +18,9 @@ bool report_pretty(const ship& st, int)
         { "rd59",   e_rd59  },
     };
 
-    printf("mass: %5.0f area:%4d cost:%6d twr:%4.1f time:%4.0f |",
-           (double)st.mass, st.area, st.cost, (double)st.twr(), (double)st.combat_time());
+    printf("mass: %5.0f area:%4d cost:%6d twr:%4.1f htwr:%4.1f time:%4.0f |",
+           (double)st.mass, st.area, st.cost,
+           (double)st.twr(), (double)st.horizontal_twr(), (double)st.combat_time());
     for (const auto& [name, x] : engine_parts)
         if (int cnt = st.count(x); cnt)
             printf(" %s:%-2d", name, cnt);

@@ -27,24 +27,25 @@ void line::sep()
     first_column = false;
 }
 
-using float_with_format = std::tuple<float, int>;
+using float_format = std::tuple<float, int>;
 
 template<> void line::write(float x) { fprintf(stream, "%.1f", (double)x); }
-template<> void line::write(float_with_format x) { auto [f, p] = x; fprintf(stream, "%.*f", p, (double)f); }
+template<> void line::write(float_format x) { auto [f, p] = x; fprintf(stream, "%.*f", p, (double)f); }
 template<> void line::write(int x) { fprintf(stream, "%d", x); }
 template<> void line::write(char x) { putc(x, stream); }
 template<> void line::write(const char* x) { fprintf(stream, "%s", x); }
 
 bool report_csv(const ship& st, int k)
 {
-    using variant = std::variant<int, float, float_with_format>;
+    using variant = std::variant<int, float, float_format>;
     auto mass_of = [&](const part& x) { return st.count(x) * x.mass; };
     auto count_of = [&](const part& x) { return st.count(x); };
 
     const std::tuple<const char*, variant> values[] = {
         { "Cost",           st.cost                                 },
         { "Mass",           st.mass                                 },
-        { "TWR",            float_with_format{st.twr(), 2}          },
+        { "TWR",            float_format{st.twr(), 2}               },
+        { "hTWR",           float_format{st.horizontal_twr(), 2}    },
         { "Combat time",    st.combat_time(),                       },
         { "Speed",          st.speed(),                             },
         { "Fuel usage",     st.fuel_usage()                         },

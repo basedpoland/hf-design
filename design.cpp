@@ -162,12 +162,10 @@ static void add_armor(ship& st, const cmdline& params)
 
 static bool filter_ship(const ship& st, const cmdline& params)
 {
-    bool ret = true;
-    ret &= params.twr.check(st.twr());
-    ret &= params.cost.check(st.cost);
-    ret &= params.fuel_usage.check(st.fuel_usage());
-
-    return ret;
+    return params.twr.check(st.twr()) &&
+           params.cost.check(st.cost) &&
+           params.fuel_usage.check(st.fuel_usage()) &&
+           params.horizontal_twr.check(st.horizontal_twr());
 }
 
 static void do_search1(const ship& st_, const cmdline& params, const std::tuple<int, int, int>& n, int& num_designs)

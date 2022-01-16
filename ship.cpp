@@ -35,6 +35,8 @@ void ship::add_part_(const part& x, int count, area_mode amode)
     else
         fuel_flow -= x.fuel * count;
     thrust += x.thrust * count;
+    if (x != e_d30s && x != e_rd51)
+        horizontal_thrust += x.thrust * count;
 
     if (count)
     {

@@ -159,6 +159,7 @@ void cmdline::usage(const char* argv0)
     constexpr const char* opts[][2] = {
         { "-f <int>",                   "fixed thruster count"                  },
         { "-t <float>",                 "minimum twr"                           },
+        { "-H <float>",                 "minimum horizontal twr"                },
         { "-e <int>",                   "max maneuvering engines"               },
         { "-u <tons>",                  "max fuel consumption"                  },
         { "-T <secs>",                  "min combat time"                       },
@@ -217,7 +218,7 @@ cmdline cmdline::parse_options(int argc, const char* const* argv)
     cmdline p{argc, argv};
     opterr = 1;
 
-    while ((c = musl_getopt(argc, argv, "f:t:e:u:T:c:hG1a:n:x:F:bm:p:BP:C:")) != -1)
+    while ((c = musl_getopt(argc, argv, "f:t:e:u:T:c:hG1a:n:x:F:bm:p:BP:C:H:")) != -1)
         switch (c)
         {
         default:
@@ -251,6 +252,7 @@ cmdline cmdline::parse_options(int argc, const char* const* argv)
         case 'B': p.use_big_engines = true; p.use_big_tanks = true; break;
         case 'P': p.power = p.get_float(0, 1); break;
         case 'C': p.chassis = p.parse_chassis_layout(optarg); break;
+        case 'H': p.horizontal_twr.parse(c); break;
         }
 ok:
     return p;
