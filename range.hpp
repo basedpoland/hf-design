@@ -13,10 +13,10 @@ extern template float string_to_type<float>(const char* str, char** endptr);
 
 enum class range_behavior : unsigned char { min, max, same };
 
-template<typename t> std::tuple<t, t, bool> parse_range_(const char* str, range_behavior r);
+template<typename t> std::tuple<t, t, bool> parse_range(const char* str, range_behavior r);
 
-extern template std::tuple<int, int, bool> parse_range_<int>(const char* str, range_behavior r);
-extern template std::tuple<float, float, bool> parse_range_<float>(const char* str, range_behavior r);
+extern template std::tuple<int, int, bool> parse_range<int>(const char* str, range_behavior r);
+extern template std::tuple<float, float, bool> parse_range<float>(const char* str, range_behavior r);
 
 template<typename t>
 struct range final

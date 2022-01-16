@@ -16,7 +16,7 @@ template<> struct conv_for_type<int>
 };
 
 template<typename t>
-std::tuple<t, t, bool> parse_range_(const char* str, range_behavior r)
+std::tuple<t, t, bool> parse_range(const char* str, range_behavior r)
 {
     constexpr auto min = std::numeric_limits<t>::min();
     constexpr auto max = std::numeric_limits<t>::max();
@@ -68,7 +68,7 @@ void range<t>::parse(int c, const char* str)
 {
     ASSERT(str);
 
-    auto [min_, max_, ok] = parse_range_<t>(str, r);
+    auto [min_, max_, ok] = parse_range<t>(str, r);
     if (!ok)
     {
         ERR("invalid range given to -%c: '%s'", (char)c, str);
@@ -87,8 +87,8 @@ range<t>::range(t min, t max, range_behavior r) : min(min), max(max), r(r) {}
 template struct range<float>;
 template struct range<int>;
 
-template std::tuple<int, int, bool> parse_range_<int>(const char* str, range_behavior r);
-template std::tuple<float, float, bool> parse_range_<float>(const char* str, range_behavior r);
+template std::tuple<int, int, bool> parse_range<int>(const char* str, range_behavior r);
+template std::tuple<float, float, bool> parse_range<float>(const char* str, range_behavior r);
 
 template<typename t>
 t string_to_type(const char* str, char** endptr)
