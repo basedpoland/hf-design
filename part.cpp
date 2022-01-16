@@ -1,7 +1,7 @@
 #include "part.hpp"
 #include "part-list.hpp"
 #include "log.hpp"
-#include "osdefs.hpp"
+#include "defs.hpp"
 #include "cmdline.hpp"
 #include <cstring>
 #include <algorithm>

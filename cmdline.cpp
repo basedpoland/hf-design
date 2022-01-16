@@ -2,7 +2,7 @@
 #include "cmdline.hpp"
 
 #include "getopt.h"
-#include "osdefs.hpp"
+#include "defs.hpp"
 #include "part.hpp"
 #include "log.hpp"
 

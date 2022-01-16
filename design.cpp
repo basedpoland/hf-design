@@ -3,7 +3,7 @@
 #include "part-list.hpp"
 #include "ship.hpp"
 #include "cmdline.hpp"
-#include "osdefs.hpp"
+#include "defs.hpp"
 #include "log.hpp"
 
 #include "getopt.h"
