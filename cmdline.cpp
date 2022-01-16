@@ -174,7 +174,6 @@ void cmdline::usage(const char* argv0)
         { "-C [<nlegs>:]n1,n2,n3,n4",   "how many chassis parts to use"         },
         {},
         { "-F <pretty|csv>",            "output format"                         },
-        { "-1", "exit immediately upon finding a match"                         },
         { "-n", "output limit"                                                  },
         { "-h, -?", "this screen"                                               },
         { "-G", "help with gun names"                                           },
@@ -218,7 +217,7 @@ cmdline cmdline::parse_options(int argc, const char* const* argv)
     cmdline p{argc, argv};
     opterr = 1;
 
-    while ((c = musl_getopt(argc, argv, "f:t:e:u:T:c:hG1a:n:x:F:bm:p:BP:C:H:")) != -1)
+    while ((c = musl_getopt(argc, argv, "f:t:e:u:T:c:hGa:n:x:F:bm:p:BP:C:H:")) != -1)
         switch (c)
         {
         default:
@@ -241,7 +240,6 @@ cmdline cmdline::parse_options(int argc, const char* const* argv)
         case 'T': p.combat_time = p.get_int(1, 1 << 16); break;
         case 'c': p.cost.parse(c); break;
         case 'G': p.gun_list(); terminate(0);
-        case '1': p.num_matches = 1; break;
         case 'a': p.armor_layers = p.get_float(0, 16); break;
         case 'n': p.num_matches = p.get_int(0); if (!p.num_matches) p.num_matches = INT_MAX; break;
         case 'x': p.num_extinguishers = p.get_int(0, 255); break;
