@@ -19,8 +19,8 @@ struct ship final
     constexpr float horizontal_twr() const { return horizontal_thrust * 100.f / mass; }
     constexpr float combat_time() const { return fuel / fuel_flow; }
     constexpr float speed() const { return twr() * 90; }
-    //constexpr float range() const { return 1e3f * fuel / fuel_usage(); } // TODO inaccurate
     constexpr float fuel_usage() const { return 3600 * 20 * fuel_flow / speed();  }
+    constexpr float range() const { return 50 * combat_time()/3600 * speed();  } // TODO inaccurate
 
     int count(const part& part) const;
     void add_part(const part& x, int count);

@@ -48,6 +48,7 @@ bool report_csv(const ship& st, int k)
         { "hTWR",           float_format{st.horizontal_twr(), 2}    },
         { "Combat time",    st.combat_time(),                       },
         { "Speed",          st.speed(),                             },
+        { "Range",          st.range()                              },
         { "Fuel usage",     st.fuel_usage()                         },
         { "Armor",          mass_of(arm_1x1)                        },
         { "Fuel",           (int)st.fuel                            },
