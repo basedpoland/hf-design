@@ -77,11 +77,11 @@ void cmdline::usage(const char* argv0)
 {
     constexpr const char* opts[][2] = {
         { "-f <int>",                   "fixed thruster count"                  },
-        { "-t <float>",                 "minimum twr"                           },
+        { "-T <float>",                 "minimum twr"                           },
         { "-H <float>",                 "minimum horizontal twr"                },
         { "-e <int>",                   "max maneuvering engines"               },
         { "-u <tons>",                  "max fuel consumption"                  },
-        { "-T <secs>",                  "min combat time"                       },
+        { "-t <secs>",                  "min combat time"                       },
         { "-c <int>",                   "max cost"                              },
         { "-a <float>",                 "layers of armor assuming square ship"  },
         { "-x <int>",                   "fire extinguisher amount"              },
@@ -131,7 +131,7 @@ cmdline cmdline::parse_options(int argc, const char* const* argv)
     cmdline p{argc, argv};
     opterr = 1;
 
-    while ((c = musl_getopt(argc, argv, "f:t:e:u:T:c:hGa:n:x:F:bm:p:BP:C:H:")) != -1)
+    while ((c = musl_getopt(argc, argv, "f:T:e:u:t:c:hGa:n:x:F:bm:p:BP:C:H:")) != -1)
         switch (c)
         {
         default:
@@ -148,10 +148,10 @@ cmdline cmdline::parse_options(int argc, const char* const* argv)
         case 'h':
             usage(argv[0]);
         case 'f': p.fixed_engines.parse(c, optarg); break;
-        case 't': p.twr.parse(c, optarg); break;
+        case 'T': p.twr.parse(c, optarg); break;
         case 'e': p.engines.parse(c, optarg); break;
         case 'u': p.fuel_usage.parse(c, optarg); break;
-        case 'T': p.combat_time = p.get_int(1, 1 << 16); break;
+        case 't': p.combat_time = p.get_int(1, 1 << 16); break;
         case 'c': p.cost.parse(c, optarg); break;
         case 'G': p.gun_list(); terminate(0);
         case 'a': p.armor_layers = p.get_float(0, 16); break;
