@@ -207,9 +207,9 @@ static void do_search(const ship& st_, ship& st, const cmdline& params, int& num
                                 return;
                         }
     else
-        for (int num_d30s = params.fixed_engines.min; num_d30s <= params.engines.max; num_d30s++)
+        for (int num_d30s = params.fixed_engines.min; num_d30s <= params.fixed_engines.max; num_d30s++)
             for (int N = params.engines.min; N <= params.engines.max; N++)
-                for (int num_d30 = 0; num_d30 <= N; num_d30++)
+                for (int num_d30 = params.fixed_engines.min; num_d30 <= params.fixed_engines.max; num_d30++)
                 {
                     int num_nk25 = N - num_d30;
                     do_search1(st_, st, params, { num_d30s, 0, num_d30, num_nk25, 0 }, num_designs);
