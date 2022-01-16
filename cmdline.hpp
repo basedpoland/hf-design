@@ -1,5 +1,5 @@
 #pragma once
-#include "range.hpp"
+#include "interval.hpp"
 #include <limits>
 #include <array>
 #include <tuple>
@@ -8,8 +8,8 @@ namespace hf::design {
 
 struct cmdline final
 {
-    using frange = range<float>;
-    using irange = range<int>;
+    using finterval = interval<float>;
+    using iinterval = interval<int>;
 
     enum fmt : char {
         fmt_pretty = 1,
@@ -24,13 +24,13 @@ struct cmdline final
 
     using chassis_layout = std::tuple<int, std::array<int, 4>>;
 
-    frange twr{1.1f, float_max};
-    frange horizontal_twr{0, float_max};
-    irange engines{1, 32, range_behavior::equal};
-    frange fuel_usage{0, float_max, range_behavior::max};
+    finterval twr{1.1f, float_max};
+    finterval horizontal_twr{0, float_max};
+    iinterval engines{1, 32, interval_behavior::equal};
+    finterval fuel_usage{0, float_max, interval_behavior::max};
     int combat_time = 200;
-    irange cost{0, int_max, range_behavior::max};
-    irange fixed_engines{2, 6, range_behavior::equal};
+    iinterval cost{0, int_max, interval_behavior::max};
+    iinterval fixed_engines{2, 6, interval_behavior::equal};
     float power = 1;
     chassis_layout chassis = {0, { 0, 0, 0, 0} };
 
