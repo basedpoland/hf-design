@@ -15,7 +15,7 @@ struct ship final
     int area = 0, cost = 0, sneaky_corners_left = 0;
     std::unordered_map<const part*, int> parts{2*part::all_parts().size()};
 
-    constexpr float twr() const { return thrust * 100.f / mass; }
+    constexpr float twr() const { return thrust * 100.f / mass + .1f; }
     constexpr float horizontal_twr() const { return horizontal_thrust * 100.f / mass; }
     constexpr float combat_time() const { return fuel / fuel_flow; }
     constexpr float speed() const { return twr() * 90; }
