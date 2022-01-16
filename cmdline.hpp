@@ -26,7 +26,7 @@ struct cmdline final
 
     frange twr{1.1f, float_max};
     frange horizontal_twr{0, float_max};
-    irange engines{1, 32, range_behavior::max};
+    irange engines{1, 32, range_behavior::same};
     frange fuel_usage{0, float_max, range_behavior::max};
     int combat_time = 200;
     irange cost{0, int_max, range_behavior::max};
