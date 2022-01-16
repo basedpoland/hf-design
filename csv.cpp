@@ -3,6 +3,7 @@
 #include "cmdline.hpp"
 #include <cstdio>
 #include <variant>
+#include <numeric>
 
 namespace hf::design {
 
@@ -49,7 +50,8 @@ bool report_csv(const ship& st, int k)
         { "Combat time",    st.combat_time(),                       },
         { "Speed",          st.speed(),                             },
         { "Fuel usage",     st.fuel_usage()                         },
-        { "Armor (tons)",   mass_of(arm_1x1)                        },
+        { "Armor",          mass_of(arm_1x1)                        },
+        { "Fuel",           (int)st.fuel                            },
         //{ "Tanks (tons)",   mass_of(tank_1x2) + mass_of(tank_4x4)   },
         { "D-30s",          count_of(e_d30s)                        },
         { "D-30",           count_of(e_d30)                         },
