@@ -76,7 +76,7 @@ static void add_legs(ship& st, const cmdline& params)
             st.add_part_(*parts[i], chassis[i], ship::area_disabled);
     }
     else if (int n = st.count(e_d30s);
-             params.use_big_engines || n % 2 != 0 || n < min_engines_for_single_leg)
+             st.count(e_rd51) || n % 2 != 0 || n < min_engines_for_single_leg)
     {
         st.add_part(leg2, 2);
         st.add_part_(leg1, 2, ship::area_disabled);
@@ -165,12 +165,12 @@ static void do_search1(const ship& st_, ship& st, const cmdline& params, const s
     st = st_;
     st.mass += params.extra_mass;
     st.power -= params.extra_power;
-    add_legs(st, params);
     st.add_part(e_d30s, num_d30s);
     st.add_part(e_rd51, num_rd51);
     st.add_part(e_d30, num_d30);
     st.add_part(e_nk25, num_nk25);
     st.add_part(e_rd59, num_rd59);
+    add_legs(st, params);
     if (!add_fuel(st, params))
         return;
     add_power(st, params);
