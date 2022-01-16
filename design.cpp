@@ -153,7 +153,7 @@ static void add_armor(ship& st, const cmdline& params)
     {
         int sz = std::abs(part->area());
         ASSERT(sz >= 1);
-        circumference -= std::sqrt((float)sz) / 4;
+        circumference -= std::sqrt((float)sz) / 2;
     }
     ASSERT(circumference > 0);
     int num_armor = (int)std::ceil(circumference);
