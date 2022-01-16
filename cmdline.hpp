@@ -1,11 +1,10 @@
 #pragma once
+#include "range.hpp"
 #include <limits>
 #include <array>
 #include <tuple>
 
 namespace hf::design {
-
-enum class range_behavior : unsigned char { min, max, same };
 
 template<typename t>
 struct range final
@@ -17,7 +16,6 @@ struct range final
     constexpr bool check(t x) const { return x >= min && x <= max; }
     explicit range(range_behavior r = range_behavior::min);
     range(t min, t max, range_behavior r = range_behavior::min);
-    range<t>& operator=(const std::tuple<t, t>& x);
     void parse(int c);
 };
 
