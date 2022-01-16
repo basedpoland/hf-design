@@ -131,7 +131,7 @@ cmdline cmdline::parse_options(int argc, const char* const* argv)
     cmdline p{argc, argv};
     opterr = 1;
 
-    while ((c = musl_getopt(argc, argv, "f:T:e:u:t:c:hGa:n:x:F:bm:p:BP:C:H:")) != -1)
+    while ((c = musl_getopt(argc, argv, "f:T:H:e:u:t:c:hGa:n:x:F:bm:p:BP:C:")) != -1)
         switch (c)
         {
         default:
@@ -149,6 +149,7 @@ cmdline cmdline::parse_options(int argc, const char* const* argv)
             usage(argv[0]);
         case 'f': p.fixed_engines.parse(c, optarg); break;
         case 'T': p.twr.parse(c, optarg); break;
+        case 'H': p.horizontal_twr.parse(c, optarg); break;
         case 'e': p.engines.parse(c, optarg); break;
         case 'u': p.fuel_usage.parse(c, optarg); break;
         case 't': p.combat_time = p.get_int(1, 1 << 16); break;
@@ -164,7 +165,6 @@ cmdline cmdline::parse_options(int argc, const char* const* argv)
         case 'B': p.use_big_engines = true; p.use_big_tanks = true; break;
         case 'P': p.power = p.get_float(0, 1); break;
         case 'C': p.chassis = p.parse_chassis_layout(optarg); break;
-        case 'H': p.horizontal_twr.parse(c, optarg); break;
         }
 ok:
     return p;
