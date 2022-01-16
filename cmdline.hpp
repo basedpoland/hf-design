@@ -6,19 +6,6 @@
 
 namespace hf::design {
 
-template<typename t>
-struct range final
-{
-    t min = std::numeric_limits<t>::min();
-    t max = std::numeric_limits<t>::max();
-    range_behavior r;
-
-    constexpr bool check(t x) const { return x >= min && x <= max; }
-    explicit range(range_behavior r = range_behavior::min);
-    range(t min, t max, range_behavior r = range_behavior::min);
-    void parse(int c);
-};
-
 struct cmdline final
 {
     using frange = range<float>;
@@ -68,21 +55,11 @@ struct cmdline final
     void gun_list() const;
     static void synopsis(const char* argv0);
     [[noreturn]] static void usage(const char* argv0);
-    [[noreturn]] static void terminate(int status);
     chassis_layout parse_chassis_layout(const char* str);
 
 private:
     cmdline() = default;
     cmdline(int argc, const char* const* argv) : argv(argv), argc(argc) {}
-};
-
-extern template struct range<float>;
-extern template struct range<int>;
-
-struct exit_status final
-{
-    int code;
-    explicit exit_status(int exit_code) : code(exit_code) {}
 };
 
 } // namespace hf::design

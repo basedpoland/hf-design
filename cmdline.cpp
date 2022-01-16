@@ -20,21 +20,6 @@
 
 namespace hf::design {
 
-template<typename t>
-void range<t>::parse(int c)
-{
-    ASSERT(optarg);
-
-    auto [min_, max_, ok] = parse_range_<t>(optarg, r);
-    if (!ok)
-    {
-        ERR("invalid range given to -%c: '%s'", (char)c, optarg);
-        cmdline::terminate(EX_USAGE);
-    }
-    min = min_;
-    max = max_;
-}
-
 void cmdline::synopsis(const char* argv0)
 {
     printf("usage: %s [opts] <count:gun-name>...\n", argv0);
@@ -140,11 +125,6 @@ void cmdline::gun_list() const
     seek_help();
 }
 
-void cmdline::terminate(int status)
-{
-    throw exit_status(status);
-}
-
 cmdline cmdline::parse_options(int argc, const char* const* argv)
 {
     int c;
@@ -167,12 +147,12 @@ cmdline cmdline::parse_options(int argc, const char* const* argv)
             goto error;
         case 'h':
             usage(argv[0]);
-        case 'f': p.fixed_engines.parse(c); break;
-        case 't': p.twr.parse(c); break;
-        case 'e': p.engines.parse(c); break;
-        case 'u': p.fuel_usage.parse(c); break;
+        case 'f': p.fixed_engines.parse(c, optarg); break;
+        case 't': p.twr.parse(c, optarg); break;
+        case 'e': p.engines.parse(c, optarg); break;
+        case 'u': p.fuel_usage.parse(c, optarg); break;
         case 'T': p.combat_time = p.get_int(1, 1 << 16); break;
-        case 'c': p.cost.parse(c); break;
+        case 'c': p.cost.parse(c, optarg); break;
         case 'G': p.gun_list(); terminate(0);
         case 'a': p.armor_layers = p.get_float(0, 16); break;
         case 'n': p.num_matches = p.get_int(0); if (!p.num_matches) p.num_matches = INT_MAX; break;
@@ -184,7 +164,7 @@ cmdline cmdline::parse_options(int argc, const char* const* argv)
         case 'B': p.use_big_engines = true; p.use_big_tanks = true; break;
         case 'P': p.power = p.get_float(0, 1); break;
         case 'C': p.chassis = p.parse_chassis_layout(optarg); break;
-        case 'H': p.horizontal_twr.parse(c); break;
+        case 'H': p.horizontal_twr.parse(c, optarg); break;
         }
 ok:
     return p;
@@ -274,14 +254,5 @@ error:
     seek_help();
     terminate(EX_USAGE);
 }
-
-template<typename t>
-range<t>::range(range_behavior r) : r(r) {}
-
-template<typename t>
-range<t>::range(t min, t max, range_behavior r) : min(min), max(max), r(r) {}
-
-template struct range<float>;
-template struct range<int>;
 
 } // namespace hf::design

@@ -1,5 +1,17 @@
 #pragma once
 
+namespace hf::design {
+[[noreturn]] void terminate(int status);
+
+struct exit_status final
+{
+    int code;
+    explicit exit_status(int exit_code) : code(exit_code) {}
+};
+
+inline void terminate(int status) { throw exit_status(status); }
+}
+
 #ifndef _WIN32
 #   include <sysexits.h>
 #else

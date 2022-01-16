@@ -64,7 +64,7 @@ static void add_legs(ship& st, const cmdline& params)
     {
         ERR("invalid chassis specification");
         params.seek_help();
-        params.terminate(EX_USAGE);
+        terminate(EX_USAGE);
     }
     if (!nlegs && total)
         nlegs = 2;
@@ -239,7 +239,7 @@ extern "C" int main(int argc, char** argv)
             if (!add_gun(st, argv[i]))
             {
                 INFO("Try '%s -G' to list supported guns.", params.argv[0]);
-                params.terminate(EX_USAGE);
+                terminate(EX_USAGE);
             }
         int nresults = 0;
         {

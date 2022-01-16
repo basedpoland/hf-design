@@ -65,7 +65,7 @@ const part& part::find_part_or_die(const char* str)
     if (&ret == &null_part)
     {
         ERR("no such part -- '%s'", str);
-        cmdline::terminate(EX_SOFTWARE);
+        terminate(EX_SOFTWARE);
     }
     return ret;
 }
