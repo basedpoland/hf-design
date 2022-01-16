@@ -75,7 +75,7 @@ static void add_legs(ship& st, const cmdline& params)
         for (unsigned i = 0; i < std::size(parts); i++)
             st.add_part_(*parts[i], chassis[i], ship::area_disabled);
     }
-    else if (int n = st.count(e_d30);
+    else if (int n = st.count(e_d30s);
              params.use_big_engines || n % 2 != 0 || n < min_engines_for_single_leg)
     {
         st.add_part(leg2, 2);
