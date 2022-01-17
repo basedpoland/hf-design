@@ -13,6 +13,11 @@
 #include <utility>
 #include <tuple>
 
+#ifdef _MSC_VER
+#   define strncasecmp _strnicmp
+#   define strcasecmp _stricmp
+#endif
+
 #define optarg musl_optarg
 #define optind musl_optind
 #define opterr musl_opterr
@@ -78,6 +83,7 @@ void cmdline::usage(const char* argv0)
     constexpr const char* opts[][2] = {
         { "-f <int>",                   "fixed thruster count"                  },
         { "-e <int>",                   "maneuvering thruster count"            },
+        { "-E <even|odd>",              "parity of small maneuvering thrusters" },
         { "-T <float>",                 "minimum twr"                           },
         { "-H <float>",                 "minimum horizontal twr"                },
         { "-u <tons>",                  "max fuel consumption"                  },
@@ -149,6 +155,7 @@ cmdline cmdline::parse_options(int argc, const char* const* argv)
             usage(argv[0]);
         case 'f': p.fixed_engines.parse(c, optarg); break;
         case 'e': p.engines.parse(c, optarg); break;
+        case 'E': p.engine_parity = p.parse_parity(optarg); break;
         case 'T': p.twr.parse(c, optarg); break;
         case 'H': p.horizontal_twr.parse(c, optarg); break;
         case 'u': p.fuel_usage.parse(c, optarg); break;
@@ -251,6 +258,22 @@ cmdline::chassis_layout cmdline::parse_chassis_layout(const char* str)
 
     return ret;
 error:
+    seek_help();
+    terminate(EX_USAGE);
+}
+
+cmdline::parity cmdline::parse_parity(const char* str)
+{
+    constexpr std::tuple<const char*, parity> args[] = {
+        { "even", parity::even },
+        { "odd",  parity::odd  },
+        { "any",  parity::any  },
+    };
+    for (const auto& [opt, ret] : args)
+        if (!strcasecmp(str, opt))
+        return ret;
+
+    ERR("invalid parity '%s'", str);
     seek_help();
     terminate(EX_USAGE);
 }

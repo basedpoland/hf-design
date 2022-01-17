@@ -17,6 +17,10 @@ struct cmdline final
         fmt_default = fmt_pretty
     };
 
+    enum class parity : char {
+        any, even, odd
+    };
+
     static constexpr auto float_min = std::numeric_limits<float>::min();
     static constexpr auto float_max = std::numeric_limits<float>::max();
     static constexpr auto int_min = std::numeric_limits<int>::min();
@@ -42,11 +46,13 @@ struct cmdline final
     int num_matches = std::numeric_limits<int>::max();
     int num_extinguishers = 2;
     fmt format = fmt_default;
+    parity engine_parity = parity::any;
     bool use_big_tanks = false;
     bool use_big_engines = false;
 
     static cmdline parse_options(int argc, const char* const* argv);
     [[noreturn]] void wrong_param(const char* explain = "") const;
+    parity parse_parity(const char* str);
 
     int get_int(int min = 0, int max = 1 << 16) const;
     float get_float(float min = 0, float max = 1 << 16) const;

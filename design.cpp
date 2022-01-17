@@ -152,6 +152,7 @@ static void add_armor(ship& st, const cmdline& params)
 
 static bool filter_ship(const ship& st, const cmdline& params)
 {
+    using parity = cmdline::parity;
     return params.twr.check(st.twr()) &&
            params.cost.check(st.cost) &&
            params.fuel_usage.check(st.fuel_usage()) &&
@@ -161,6 +162,14 @@ static bool filter_ship(const ship& st, const cmdline& params)
 static void do_search1(const ship& st_, ship& st, const cmdline& params, const std::tuple<int, int, int, int, int>& n, int& num_designs)
 {
     auto [num_d30s, num_rd51, num_d30, num_nk25, num_rd59] = n;
+
+    switch (int N = num_d30 + num_nk25; params.engine_parity)
+    {
+        using parity = cmdline::parity;
+        case parity::any: break;
+        case parity::even: if (N % 2 != 0) return; break;
+        case parity::odd:  if (N % 2 == 0) return; break;
+    }
 
     st = st_;
     st.mass += params.extra_mass;
