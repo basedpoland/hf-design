@@ -1,4 +1,3 @@
-#undef NDEBUG
 #include "part.hpp"
 #include "part-list.hpp"
 #include "ship.hpp"

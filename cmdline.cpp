@@ -1,4 +1,3 @@
-#undef NDEBUG
 #include "cmdline.hpp"
 
 #include "getopt.h"
