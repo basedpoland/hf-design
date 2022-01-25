@@ -3,6 +3,7 @@
 #include "ship.hpp"
 #include "log.hpp"
 
+#include <cmath>
 #include <tuple>
 
 namespace hf::design {
