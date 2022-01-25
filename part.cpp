@@ -16,6 +16,8 @@ static auto& static_parts()
 static bool part_lessp(const part* a, const part* b) { return strcmp(a->name, b->name) < 0; }
 static bool part_name_lessp(const part* a, const char* b) { return strcmp(a->name, b) < 0; }
 
+unsigned part::global_idx = 0;
+
 part::part(const char* name, double mass, double power, part_size size, int price,
            double thrust, double fuel, int ammo) :
     mass{(float)mass},
@@ -32,6 +34,7 @@ part::part(const char* name, double mass, double power, part_size size, int pric
     if (it != parts.end() && !strcmp(name, (**it).name))
         ABORT("duplicate part -- '%s' - %s", name, (**it).name);
     parts.insert(it, this);
+    index = global_idx++;
 }
 
 part::~part()

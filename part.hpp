@@ -8,6 +8,7 @@ enum part_size : int { sz_1x1 = 1, sz_2x2 = 4, sz_1x2 = 2, sz_4x4 = 16, sz_bigfu
 struct part final
 {
     static const std::vector<const part*>& all_parts();
+    static unsigned global_idx;
 
     float mass, power;
     const char* name = nullptr;
@@ -15,6 +16,7 @@ struct part final
     int price;
     float fuel, thrust;
     int ammo;
+    unsigned index;
 
     part() = delete;
 

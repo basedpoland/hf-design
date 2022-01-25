@@ -6,11 +6,7 @@ namespace hf::design {
 
 int ship::count(const part& x) const
 {
-    auto it = parts.find(&x);
-    if (it != parts.end())
-        return it->second;
-    else
-        return 0;
+    return parts[x.index].second;
 }
 
 ship::ship()
@@ -40,8 +36,7 @@ void ship::add_part_(const part& x, int count, area_mode amode)
     if (count)
     {
         //(void)find_part_or_die(x.name);
-        auto [it, b] = parts.insert({&x, 0});
-        it->second += count;
+        parts[x.index].second += count;
 
         if (x == h_cor)
             sneaky_corners_left += count;
@@ -57,6 +52,15 @@ void ship::add_part(const part& x, int count)
     ASSERT(hull != null_part);
     if (hull != h_null)
         add_part_(hull, count, area_disabled);
+}
+
+decltype(ship::parts) ship::init_parts()
+{
+    const auto& all_parts = part::all_parts();
+    decltype(ship::parts) parts{all_parts.size()};
+    for (const auto* part : all_parts)
+        parts.push_back({ part, 0 });
+    return parts;
 }
 
 } // namespace hf::design
