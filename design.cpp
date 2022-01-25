@@ -188,9 +188,9 @@ static void do_search1(const ship& st_, ship& st, const cmdline& params, const s
 
     switch (params.format)
     {
-    case params.fmt_csv:
+    case cmdline::fmt_csv:
         report_csv(st, num_designs) && num_designs++; break;
-    case params.fmt_pretty:
+    case cmdline::fmt_pretty:
         report_pretty(st, num_designs) && num_designs++; break;
     }
 
