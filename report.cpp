@@ -23,7 +23,7 @@ bool report_pretty(const ship& st, int)
            (double)st.twr(), (double)st.horizontal_twr(), (double)st.combat_time());
     for (const auto& [name, x] : engine_parts)
         if (int cnt = st.count(x); cnt)
-            printf(" %s:%-2d", name, cnt);
+            printf(" %s:%d", name, cnt);
     printf(" pwr:%d,%d", st.count(pwr_1x2), st.count(pwr_2x2));
     printf(" tank:%2d,%d", st.count(tank_1x2), st.count(tank_4x4));
     printf(" legs:%d,%d", st.count(leg1), st.count(leg2));
