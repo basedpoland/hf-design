@@ -1,4 +1,5 @@
 #include "interval.hpp"
+#include <cstdlib>
 #include <cerrno>
 #include <cstring>
 
