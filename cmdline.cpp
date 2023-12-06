@@ -98,7 +98,7 @@ void cmdline::usage(const char* argv0)
         { "-C [<nlegs>:]n1,n2,n3,n4",   "how many chassis parts to use"         },
         {},
         { "-F <pretty|csv>",            "output format"                         },
-        { "-n",                         "output limit"                          },
+        { "-n <int>",                   "output limit"                          },
         { "-h, -?",                     "this screen"                           },
         { "-G", "help with gun names"                                           },
         {},
